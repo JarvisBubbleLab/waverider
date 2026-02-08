@@ -1,0 +1,524 @@
+<!-- ================= DASHBOARD ================= -->
+<section id="dashboard">
+  <h1>LIVE TRADE DESK</h1>
+
+  <!-- Logout -->
+  <div style="margin-bottom:15px;">
+    <button class="btn-secondary" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Status Bubble -->
+  <div class="status-bubble" onclick="toggleStatusPanel()">Account Status</div>
+
+  <!-- ================= ACCOUNT SNAPSHOT + COPY DOTS ================= -->
+  <div class="account-cards">
+
+    <!-- Balance Card -->
+    <div class="card card-small">
+      <h3>Balance</h3>
+      <p id="snapshotBalance">—</p>
+    </div>
+
+    <!-- Visits Card -->
+    <div class="card card-small">
+      <h3>Visits</h3>
+      <p id="snapshotVisits">0</p>
+    </div>
+
+    <!-- Copy Accounts Dots -->
+    <div class="card card-large">
+      <h3>Copy Accounts</h3>
+      <div id="copyStatusDots" class="copy-dots-container"></div>
+    </div>
+
+  </div>
+
+  <style>
+    /* Account Cards Container */
+    .account-cards {
+      display: flex;
+      gap: 8px;
+      width: 97%;
+      margin-bottom: 20px;
+      flex-wrap: nowrap;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    /* Base Card */
+    .card {
+      background: #1c1c1c;
+      color: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      min-height: 110px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .card h3 {
+      margin: 0 0 6px 0;
+      font-size: 16px;
+      color: #00bfff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card p {
+      font-size: 20px;
+      margin: 0;
+      color: #00ff00;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-small {
+      flex: 0 0 calc((97% - 16px) * 0.28);
+    }
+
+    .card-large {
+      flex: 0 0 calc((97% - 16px) * 0.44);
+    }
+
+    /* Copy dots */
+    .copy-dots-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+      max-height: 70px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .copy-dots-container::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 40px;
+      height: 20px;
+      background: linear-gradient(to right, transparent, #1c1c1c);
+      pointer-events: none;
+    }
+
+    .copy-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: gray;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .copy-dot:hover {
+      transform: scale(1.2);
+    }
+
+    .copy-dot.online   { background-color: #00ff00; }
+    .copy-dot.offline  { background-color: #ff0000; }
+    .copy-dot.disabled { background-color: #000000; }
+    .copy-dot.unknown  { background-color: #ffff00; }
+
+    /* DESK FLEX LAYOUT */
+    .desk {
+      display: flex;
+      gap: 20px;
+      flex-wrap: nowrap;
+      margin-top: 20px;
+    }
+
+    .trade-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .calendar-container {
+      background: #1c1c1c;
+      color: #fff;
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      overflow-y: auto;
+    }
+
+    .week {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+
+    .day {
+      background: #333;
+      flex: 1;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .day.allowed {
+      background: #008000;  /* green background */
+      color: #000000;       /* black text */
+    }
+
+    .day.locked  { background: #800000; }
+    .clickable-month { cursor: pointer; background: #0044ff; }
+  </style>
+
+  <!-- PASSWORD BOX -->
+  <div id="passwordBox" class="card" style="display:none;">
+    <h3>Welcome to your TRADE DESK - Dashboard. Secure your account before you leave.</h3>
+    <input type="password" id="pw" placeholder="Create password" />
+    <button id="savePwBtn" class="btn-primary" onclick="savePassword()">Save Password</button>
+    <div id="pwStatus" style="display:none; margin-top:12px; color:#7dd3fc; font-size:14px;">
+      Thank you, one moment please…
+    </div>
+  </div>
+
+  <!-- ================= DESK: VIDEO + CALENDAR SIDE BY SIDE ================= -->
+<style>
+  /* DESK FLEX LAYOUT */
+  .desk {
+    display: flex;
+    gap: 8px; /* space between left and right */
+    width: 91%;
+    box-sizing: border-box;
+  }
+
+  /* LEFT: Video / Charts / Stream */
+  .desk .trade-box:first-child {
+    flex: 0 0 72%;   /* 72% width */
+  }
+
+  /* RIGHT: Trade Actions + Calendar */
+  .desk .trade-box:last-child {
+    flex: 0 0 28%;   /* 28% width */
+    display: flex;
+    flex-direction: column; /* stack trade panel + calendar vertically */
+    gap: 8px;
+    max-height: 1650px;
+    overflow-y: auto; /* scroll if content is too tall */
+  }
+
+  /* Make iframe responsive */
+  .desk .trade-box iframe {
+    width: 98%;
+    height: 650px;
+    border: 0;
+  }
+</style>
+
+<div class="desk">
+
+  <!-- LEFT: Video / Charts / Stream -->
+  <div class="trade-box">
+    <iframe width="100%" height="660"
+            src="https://www.youtube.com/embed/kCmmedYQRFc?autoplay=1&mute=1"
+            frameborder="0" allow="autoplay" allowfullscreen></iframe>
+  </div>
+
+  <!-- RIGHT: Trade Actions + Calendar -->
+  <div class="trade-box">
+
+    <h2 id="symbol">Your Phantom Trade Panel</h2>
+    <p id="prices">No open trades</p>
+    <div id="openTrades"></div>
+
+    <div id="buttons">
+      <button class="long" onclick="act('LONG')">LONG</button>
+      <button class="short" onclick="act('SHORT')">SHORT</button>
+      <button class="close" onclick="act('CLOSE')">CLOSE</button>
+      <div id="message"></div>
+    </div>
+
+    <!-- ================= JARVIS CALENDAR ================= -->
+    <div id="jarvis-calendar" class="calendar-container">
+
+      <h3>
+        <button class="toggle-calendar" onclick="toggleCalendar('my')">
+          Click Here To View Your Trade History
+        </button>
+      </h3>
+
+      <!-- ================= MAIN JARVIS VIEW ================= -->
+      <div id="jarvis-main-view">
+        <!-- FEBRUARY -->
+        <div class="week">
+          <div class="day">February Jarvis Trades</div>
+        </div>
+
+        <div class="week">
+          <div class="day allowed">Monday<br>208.75 pts.</div>
+          <div class="day allowed">Tuesday<br>99.27 pts.</div>
+          <div class="day allowed">Wednesday<br>316 pts.</div>
+          <div class="day">Thursday<br>pts.</div>
+          <div class="day">Friday<br>pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">Monday<br>pts.</div>
+          <div class="day">Tuesday<br>pts.</div>
+          <div class="day">Wednesday<br>pts.</div>
+          <div class="day">Thursday<br>pts.</div>
+          <div class="day">Friday<br>pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">Monday<br>pts.</div>
+          <div class="day">Tuesday<br>pts.</div>
+          <div class="day">Wednesday<br>pts.</div>
+          <div class="day">Thursday<br>pts.</div>
+          <div class="day">Friday<br>pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">Monday<br>pts.</div>
+          <div class="day">Tuesday<br>pts.</div>
+          <div class="day">Wednesday<br>pts.</div>
+          <div class="day">Thursday<br>pts.</div>
+          <div class="day">Friday<br>pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">Monday<br>pts.</div>
+          <div class="day">Tuesday<br>pts.</div>
+          <div class="day">Wednesday<br>pts.</div>
+          <div class="day">Thursday<br>pts.</div>
+          <div class="day">Friday<br>pts.</div>
+        </div>
+
+        <br>
+        <h3>Jarvis 2026 Monthly Results</h3>
+
+        <div class="week">
+          <!-- CLICKABLE JANUARY TILE -->
+          <div class="day allowed clickable-month" onclick="showJanuary()">
+            January<br>709.53 pts.
+          </div>
+          <div class="day allowed">February<br>704.02 pts.</div>
+          <div class="day">March<br>pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">April<br>pts.</div>
+          <div class="day">May<br>pts.</div>
+          <div class="day">June<br>pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">July<br>pts.</div>
+          <div class="day">August<br>pts.</div>
+          <div class="day">September<br>pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">October<br>pts.</div>
+          <div class="day">November<br>pts.</div>
+          <div class="day">December<br>pts.</div>
+        </div>
+
+      </div>
+
+      <!-- ================= JANUARY VIEW ================= -->
+      <div id="january-view" style="display:none;">
+
+        <h3>
+          January Jarvis Results
+          <button class="toggle-calendar" onclick="hideJanuary()">
+            ← Back to Overview
+          </button>
+        </h3>
+
+        <div class="week">
+          <div class="day">Monday<br>pts.</div>
+          <div class="day">Tuesday<br>pts.</div>
+          <div class="day">Wednesday<br>pts.</div>
+          <div class="day">Thursday<br>pts.</div>
+          <div class="day allowed">Friday<br>57.04 pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">Monday<br>pts.</div>
+          <div class="day allowed">Tuesday<br>107.67 pts.</div>
+          <div class="day allowed">Wednesday<br>80.97 pts.</div>
+          <div class="day">Thursday<br>pts.</div>
+          <div class="day locked">Friday<br>-67.24 pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">Monday<br>pts.</div>
+          <div class="day">Tuesday<br>pts.</div>
+          <div class="day">Wednesday<br>pts.</div>
+          <div class="day">Thursday<br>pts.</div>
+          <div class="day">Friday<br>pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">Monday<br>pts.</div>
+          <div class="day">Tuesday<br>pts.</div>
+          <div class="day">Wednesday<br>pts.</div>
+          <div class="day">Thursday<br>pts.</div>
+          <div class="day allowed">Friday<br>79.99 pts.</div>
+        </div>
+
+        <div class="week">
+          <div class="day">Monday<br>pts.</div>
+          <div class="day allowed">Tuesday<br>79.86 pts.</div>
+          <div class="day locked">Wednesday<br>-77.94 pts.</div>
+          <div class="day allowed">Thursday<br>639.45 pts.</div>
+          <div class="day locked">Friday<br>190.26 pts.</div>
+        </div>
+
+      </div>
+
+    </div> <!-- END JARVIS CALENDAR -->
+
+    <!-- ================= MY CALENDAR ================= -->
+    <div id="my-calendar" class="calendar-container" style="display:none;">
+      <h3>
+        My Trade Results & Monthly Data
+        <button class="toggle-calendar" onclick="toggleCalendar('jarvis')">
+          Click Here To View Jarvis Trade Results
+        </button>
+      </h3>
+    </div>
+
+  </div> <!-- END RIGHT TRADE BOX -->
+
+</div> <!-- END DESK -->
+
+
+  <!-- ================= STATUS PANEL ================= -->
+  <div id="status-panel">
+    <h2>Account Status & Operating Scope</h2>
+    <div class="status-grid">
+
+      <div class="status-card">
+        <h4>Membership</h4>
+        <p class="allowed"><strong>Email: </strong> <span id="snapshotEmail">—</span></p>
+        <p class="allowed"><strong>✔ Tier: </strong>LEARN_JARVIS</p>
+      </div>
+
+      <div class="status-card">
+        <h4>Current Permissions</h4>
+        <p class="allowed">✔ Personal Tradedesk</p>
+        <p class="allowed">✔ Learn Jarvis Executions</p>
+      </div>
+
+      <div class="status-card">
+        <h4>Unlockable Paths</h4>
+        <p class="allowed">✔ Affiliate Marketing</p>
+        <p class="allowed">✔ Copy Trader</p>
+      </div>
+
+      <div class="status-card">
+        <h4>System Levels</h4>
+        <p class="allowed">✔ Ledger Copy Trading (Active)</p>
+        <p class="locked">X License Upgrade (Maintenance Mode)</p>
+        <p class="locked">X Build Futures AI License (Maintenance Mode)</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= QUICK LINKS ================= -->
+  <div style="display:flex; justify-content:center; gap:60px; margin-top:50px;">
+    <div style="text-align:center;">
+      <a href="#" onclick="openAffiliateSection()" style="color:#4da3ff; font-weight:bold; text-decoration:none;">
+        Affiliate Lab →
+      </a>
+    </div>
+
+    <div style="text-align:center;">
+      <a href="#" onclick="openCopyTradeSection()" style="color:#4da3ff; font-weight:bold; text-decoration:none;">
+        Copy Trader →
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // OPEN TRADES RENDER
+    function renderOpenTrades(userId) {
+      google.script.run.withSuccessHandler(renderTradesOnPage).getOpenTrades(userId);
+    }
+
+    function renderTradesOnPage(trades) {
+      const container = document.getElementById('openTradeContainer');
+      container.innerHTML = '';
+      if (trades.length === 0) { container.innerHTML = '<p>No open trades</p>'; return; }
+      trades.forEach(trade => {
+        const tradeEl = document.createElement('div');
+        tradeEl.className = 'trade-card';
+        tradeEl.innerHTML = `<strong>${trade.Type}</strong> | Entry: ${trade.Entry} | SL: ${trade.SL} | TP: ${trade.TP}`;
+        container.appendChild(tradeEl);
+      });
+    }
+
+    setInterval(() => { renderOpenTrades(currentUserId); }, 60000);
+
+    function openAffiliateSection() {
+      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+      document.getElementById("affiliateSection").style.display = "block";
+      loadAffiliateStatus();
+    }
+
+    function openCopyTradeSection() {
+      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+      document.getElementById("copytradeSection").style.display = "block";
+      loadCopyTradeStatus();
+    }
+
+    function loadCopyStatusDots() {
+      const container = document.getElementById('copyStatusDots');
+      if (!container) return;
+      container.innerHTML = '';
+      google.script.run.withSuccessHandler(res => {
+        if (!res || !res.success || !res.accounts) return;
+        res.accounts.forEach(acc => {
+          const dot = document.createElement('div');
+          const color = determineDotColor(acc);
+          dot.className = `copy-dot ${color}`;
+          dot.innerHTML = `<div class="copy-tooltip">
+            <strong>${acc.accountName}</strong><br>
+            Platform: ${acc.platform}<br>
+            Type: ${acc.accountType}<br>
+            Status: ${acc.status}<br>
+            Enabled: ${acc.enabled ? 'Yes' : 'No'}<br>
+            Last Seen: ${formatLastSeen(acc.lastSeen)}
+          </div>`;
+          container.appendChild(dot);
+        });
+      }).getCopyAccounts();
+    }
+
+    function determineDotColor(acc) {
+      if (!acc.enabled) return 'grey';
+      if (acc.status !== 'Connected') return 'red';
+      if (acc.lastSeen) {
+        const diffMin = (Date.now() - new Date(acc.lastSeen)) / 60000;
+        if (diffMin > 5) return 'yellow';
+      }
+      return 'green';
+    }
+
+    function formatLastSeen(ts) {
+      if (!ts) return 'Never';
+      const diff = Math.floor((Date.now() - new Date(ts)) / 60000);
+      if (diff < 1) return 'Just now';
+      if (diff < 60) return `${diff} min ago`;
+      return `${Math.floor(diff / 60)} hr ago`;
+    }
+  </script>
+</section>
