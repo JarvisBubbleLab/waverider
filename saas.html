@@ -1,0 +1,320 @@
+<!-- ================= SAAS ================= -->
+<section id="saas">
+
+  <!-- Top Flex Row -->
+  <div class="saas-top" style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:40px;">
+  <div class="saas-image" style="flex:1; min-width:250px; position:relative; display:inline-block;">
+    <img src="https://lh3.googleusercontent.com/d/157MNyB8UmKwiPRv6UXceH_Blo5A13eBZ" 
+        alt="Jarvis Bubble Lab Licensing" 
+        style="width:100%; border-radius:12px;">
+
+    <!-- Tooltip -->
+    <div class="tooltip-text">
+      Following are instructions to generate and register your Machine ID for JarvisBubbleLab Products License:<br><br>
+      1. Go to the Ninjatrader Control Center, then click Help &gt; “3rd party licensing”<br>
+      2. At the “Vendor Name” field, input: <strong>JarvisBubbleLab</strong><br>
+      3. At the “User Defined ID” field, input anything to identify you (e.g., FirstName, LastName, CompanyName)<br>
+      4. Press “Submit” once. This links your Machine/User ID to JarvisBubbleLab at the NinjaTrader license server<br>
+      5. Copy the Signed Machine ID to the checkout page field “Signed Ninjatrader Machine ID 1”<br>
+      6. For additional machines, use fields 2, 3, etc.<br>
+      7. Close the “3rd party licensing” window
+    </div>
+  </div>
+
+    <style>
+    .saas-image .tooltip-text {
+      display: none;
+      position: absolute;
+      top: 100%; /* below the image */
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      width: 300px;
+      font-size: 13px;
+      line-height: 1.5;
+      z-index: 100;
+      white-space: normal;
+      text-align: left;
+    }
+
+    .saas-image:hover .tooltip-text {
+      display: block;
+    }
+    </style>
+
+    <div class="saas-description" style="flex:1; min-width:520px;">
+          <div class="license-billboard" style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+          <div class="license-card" style="flex:1; min-width:50px; border:1px solid #222; border-radius:12px; padding:20px; background:#11151c;">
+
+          <p><strong>NinjaTrader License Phases </strong></p>
+
+          <div class="table-wrap">
+            <table class="funnel-table">
+              <thead>
+                <tr>
+                  <th>Stage</th>
+                  <th>Duration</th>
+                  <th>Cost</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Free Trial</td>
+                  <td>3 days</td>
+                  <td>$0</td>
+                  <td>Low friction entry</td>
+                </tr>
+                <tr>
+                  <td>Short-Term Access</td>
+                  <td>8 days</td>
+                  <td>$125</td>
+                  <td>Curiosity → payment</td>
+                </tr>
+                <tr>
+                  <td>Mid-Term Access</td>
+                  <td>17 days</td>
+                  <td>$750</td>
+                  <td>Users see real value</td>
+                </tr>
+                <tr>
+                  <td>Full Subscription</td>
+                  <td>Ongoing</td>
+                  <td>$899/month</td>
+                  <td>Premium commitment</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <p style="margin-top:20px; line-height:1.6;">
+      <form id="licenseForm">
+        Wait for trial to end or proceed now to add more days.<br><br><label>Insert Your Email:</label>
+        <input type="email" name="email" required>
+
+        <label>Insert Your Machine ID:</label>
+        <input type="text" name="machineId" required>
+
+        <input type="submit" value="Get License Key">
+      </form> <br> Proceed to the section below to purchase an extenstion for the license.
+
+      </p>
+    </div>
+  </div>
+
+  <!-- License Billboard -->
+  <div class="license-billboard" style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+
+    <!-- LICENSE I -->
+    <div class="license-card" style="flex:1; min-width:250px; border:1px solid #222; border-radius:12px; padding:20px; background:#11151c;">
+      <h3>30/60 Minute ORB Trade Automation</h3>
+      <div class="price">$899</div>
+      <p>
+        ✅ Key Features in This Version<br>
+        - ORB Duration Toggle: 30 or 60 minutes (user selectable)<br>
+        - Fades: Disabled on trend days automatically<br>
+        - Pivot Target Override: ATR decay model (75% per bar, max 5 bars)<br>
+        - Bubble Grades: A+, A, B, C with clear color coding<br>
+        - Brackets: ATR-based profit/stop<br>
+        - One trade per day — client-friendly and subscription-safe.
+      </p>
+      <ul>
+        <li>Ready-to-use NinjaTrader script</li>
+        <li>Setup instructions included</li>
+        <li>Single-user license</li>
+      </ul>
+      <button class="btn-primary" onclick="toggleFlow('I')">Buy License</button>
+
+      <div class="license-flow" id="flow-I" style="display:none; margin-top:20px;">
+        <label>Are you 18 years or older?</label>
+        <select id="age-I">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label style="margin-top:10px;"><br><br>
+          Do you understand Jarvis Bubble Lab does not provide trading advice?
+        </label>
+        <select id="advice-I">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label style="margin-top:10px;"><br><br>
+          Would you like to attempt the $50,000 Challenge first?
+        </label>
+        <select id="challenge-I">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <button class="btn-secondary" style="margin-top:15px;" onclick="submitLicenseInline('I')">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <!-- LICENSE II -->
+    <div class="license-card featured" style="flex:1; min-width:250px; border:2px solid #00ff9c; border-radius:12px; padding:20px; background:#11151c;">
+      <h3>Jarvis ATR Pullback</h3>
+      <div class="price">$899</div>
+      <p>
+        Advanced Jarvis strategy with enhanced logic and performance controls.
+        Designed for serious traders and small firms. This script takes multiple momentum trades currently during New York morning session. Strict ATR proprietary targets with previous bar risk. Jarvis Bubble Graded Entry's, as well as win loss static bubbles for each trade of the day.
+      </p>
+      <ul>
+        <li>Advanced script logic</li>
+        <li>Ready-to-use NinjaTrader script</li>
+        <li>Setup instructions included</li>
+        <li>Single-user license</li>
+      </ul>
+      <button class="btn-primary" onclick="toggleFlow('II')">Buy License</button>
+
+      <div class="license-flow" id="flow-II" style="display:none; margin-top:20px;">
+        <label>Are you 18 years or older?</label>
+        <select id="age-II">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label style="margin-top:10px;"><br><br>
+          Do you understand Jarvis Bubble Lab does not provide trading advice?
+        </label>
+        <select id="advice-II">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label style="margin-top:10px;"><br><br>
+          Would you like to attempt the $50,000 Challenge first?
+        </label>
+        <select id="challenge-II">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <button class="btn-secondary" style="margin-top:15px;" onclick="submitLicenseInline('II')">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <!-- BUILD YOUR OWN -->
+    <div class="license-card" style="flex:1; min-width:250px; border:1px solid #222; border-radius:12px; padding:20px; background:#11151c;">
+      <h3>Build Your Own Jarvis</h3>
+      <div class="price custom">Custom Pricing</div>
+      <p>
+        Design a fully customized Jarvis system.
+        Ideal for firms, prop groups, and enterprise traders.
+      </p>
+      <ul>
+        <li>12-step guided questionnaire</li>
+        <li>Email + internal review</li>
+        <li>Optional NinjaTrader webhook</li>
+      </ul>
+      <button class="btn-secondary" onclick="startBuild()">Start Build</button>
+
+      <div id="byoFlow" style="display:none; margin-top:20px; border:1px solid #222; padding:20px; background:#11151c; border-radius:12px;">
+        <h3 id="byoTitle">Step 1 / 12</h3>
+        <p id="byoQuestion"></p>
+        <input type="text" id="byoAnswer" placeholder="Your answer here"
+          style="width:100%; padding:10px; margin-top:10px; font-size:16px;" />
+        <div style="margin-top:15px;">
+          <button class="btn-secondary" onclick="byoBack()">Back</button>
+          <button class="btn-primary" onclick="byoNext()">Next</button>
+          <button class="btn-secondary" onclick="byoCancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEBHOOK MODAL -->
+  <div id="webhookModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.7); justify-content:center; align-items:center;">
+    <div style="background:#111; padding:30px; border-radius:12px; max-width:420px; color:white; text-align:center;">
+      <h3>Do you understand you are licensing this software as is?</h3>
+      <p>
+        And, you may lose money and are willing to take the risk?
+        <strong>And will hold Jarvis Bubble Lab harmless of said losses?</strong>
+      </p>
+      <button class="btn-secondary" onclick="finalizeLicense(false)">Yes, all losses are my own</button>
+      <button class="btn-secondary" style="margin-top:10px;" onclick="cancelWebhook()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- FINAL CHECKOUT CONFIRMATION -->
+  <div id="checkoutConfirm" style="display:none; margin-top:40px; text-align:center;"></div>
+
+  <script>
+    function toggleFlow(type) {
+      const flow = document.getElementById('flow-' + type);
+      flow.style.display = flow.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function submitLicenseInline(type) {
+      window.selectedLicense = type;
+      document.getElementById('webhookModal').style.display = 'flex';
+    }
+
+    function cancelWebhook() {
+      document.getElementById('webhookModal').style.display = 'none';
+    }
+
+    function finalizeLicense(addWebhook){
+      document.getElementById('webhookModal').style.display='none';
+
+      if(window.byoSubmission){
+        window.byoSubmission.CustomRequirements = addWebhook
+          ? "Webhook added"
+          : window.byoSubmission.CustomRequirements;
+        google.script.run.submitBuildYourOwn(window.byoSubmission);
+      }
+
+      const licenseNameMap = {
+        I: "30/60 Minute ORB",
+        II: "Jarvis ATR Pullback",
+        BYO: "Build Your Own Jarvis"
+      };
+
+      const licenseCode = window.selectedLicense || 'BYO';
+      const licenseDisplayName = licenseNameMap[licenseCode] || licenseCode;
+
+      const checkoutDiv = document.getElementById('checkoutConfirm');
+      checkoutDiv.style.display='block';
+      checkoutDiv.innerHTML=`
+        <h3 style="color:#00ff9c;">You're Almost Done</h3>
+        <p>
+          Your license selection (<strong>${licenseDisplayName}</strong>) has been confirmed.
+          Click below to complete secure checkout.
+        </p>
+        <button class="btn-primary" onclick="proceedStripe()">Proceed to Secure Checkout</button>
+        <p style="font-size:12px; color:#888; margin-top:10px;">
+          Stripe Checkout integration placeholder
+        </p>
+      `;
+    }
+
+    function proceedStripe(){
+      const license = window.selectedLicense || 'BYO';
+      let amount = 0;
+      if(license==='I') amount=899;
+      else if(license==='II') amount=899;
+      alert(
+        `This would redirect to Stripe Checkout for ${license}. ` +
+        `Amount: ${amount>0 ? '$'+amount : 'Custom pricing'}`
+      );
+    }
+  </script>
+</section>
