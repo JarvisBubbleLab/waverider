@@ -1,0 +1,97 @@
+<!-- ================= $50K CHALLENGE / MEMBER LOGIN ================= -->
+<section id="challenge">
+  <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:stretch;">
+
+    <!-- IMAGE -->
+    <div style="flex:1; min-width:250px; display:flex; align-items:center; justify-content:center;">
+      <img class="feature-image"
+           src="https://lh3.googleusercontent.com/d/1seRRIbVaN9e4fE-QhX73aBPrj0SNCqVf"
+           style="width:110%; height:100%; object-fit:contain;"/>
+    </div>
+
+    <!-- INFO + CTA -->
+    <div style="flex:0.9; min-width:250px; border:1px solid #222; padding:20px; border-radius:12px; background:#11151c;">
+      <h2>Get To Know Jarvis Before You Purchase A License</h2>
+      <p style="color:gold; font-weight:bold;">
+        Free for 30 days • $5/month afterward • Cancel anytime
+      </p>
+
+      <!-- INLINE FLOW -->
+      <div id="challengeFlow" class="challenge-flow">
+
+        <!-- MEMBER LOGIN -->
+        <div id="challengeStepLogin" style="display:none;">
+          <h3>Welcome Back</h3>
+          <input id="memberEmail" placeholder="Email" />
+          <input id="memberPassword" type="password" placeholder="Password" />
+          <button class="btn-primary" onclick="submitMemberPassword()">Login</button>
+          <p id="loginLoading" style="display:none;">Verifying…</p>
+          <p id="loginError" style="display:none; color:#ff6b6b;"></p>
+        </div>
+
+        <!-- EMAIL -->
+        <div id="challengeStepEmail">
+          <h3>Start Your Demo</h3>
+          <input id="challengeEmail" placeholder="you@example.com" />
+          <button class="btn-primary" onclick="submitChallengeEmail()">Activate</button>
+          <p id="challengeLoading" style="display:none;">Setting up…</p>
+        </div>
+
+        <!-- CONFIRM -->
+        <div id="challengeStepConfirm" style="display:none;">
+          <h3>Welcome 🎉</h3>
+          <p>Come on in, join the fun!</p>
+          <button class="btn-primary" onclick="enterDashboardFromChallenge()">Enter Your Dashboard</button>
+        </div>
+
+      </div>
+
+      <div style="margin-top:30px; color:#ccc;">
+        <p>Learn all about Jarvis, Watch actual simulated trading, copy the trades to track Jarvis software results.</p>
+      <br><br>
+      Key Characteristics:<br>
+      ✅ Your trades are simulated / ledger-based<br>
+      ✅ No brokerage connection required as you test Jarvis<br>
+      ✅ Latency does not matter during this phase<br>
+      ✅ Track Jarvis performance for yourself<br>
+      ✅ All activity is recorded as a learning ledger<br>
+      ✅ NOT direct execution or financial advice<br>
+      <br><br>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE-COLUMN INFORMATION ROW -->
+  <div style="display:flex; flex-wrap:wrap; gap:20px; margin-top:30px;">
+    <!-- WHO THIS IS FOR -->
+    <div style="flex:1; min-width:250px; border:1px solid #222; padding:20px; border-radius:12px; background:#11151c;">
+      <h3>Who This Is For</h3>
+      <p>Users who want automation:</p>
+      <ul style="color:#ccc;">
+        <li>Trade Futures NQ, MNQ, ES, MES</li>
+        <li>Want to experience Jarvis here first</li>
+      </ul>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div style="flex:1; min-width:250px; border:1px solid #222; padding:20px; border-radius:12px; background:#11151c;">
+      <h3>How It Works</h3>
+      <p>Provide an email and get back office trade desk:</p>
+      <ul style="color:#ccc;">
+        <li>Watch daily live feeds of Jarvis at work</li>
+        <li>Observe Jarvis entering phantom trades in a live market</li>
+        <li>Copy trade each trade in a non money ledger to keep track</li>
+      </ul>
+    </div>
+
+    <!-- CONVERSION POINT -->
+    <div style="flex:1; min-width:250px; border:1px solid #222; padding:20px; border-radius:12px; background:#11151c;">
+      <h3>License Software</h3>
+      <p>No time frame:</p>
+      <ul style="color:#ccc;">
+        <li>When you are comfortable with Jarvis, take the next step</li>
+        <li>Get 3 day trial for live account at NinjaTrader</li>
+      </ul>
+    </div>
+  </div>
+</section>
