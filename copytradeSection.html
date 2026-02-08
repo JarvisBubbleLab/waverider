@@ -1,0 +1,415 @@
+<!-- ================= COPYTRADER ================= -->  
+<section id="copytradeSection" style="display:none; padding:40px; background:#0b0f17; min-height:100vh;">
+
+  <!-- GLOBAL MESSAGE -->
+  <div id="copytradeMessage" style="
+      margin-bottom:20px;
+      padding:12px 16px;
+      background:rgba(77,163,255,0.12);
+      border-left:4px solid #4da3ff;
+      border-radius:6px;
+      color:#b9dcff;
+      font-size:14px;
+      display:none;
+    "></div>
+
+  <!-- BACK BUTTON -->
+  <button onclick="returnToTradeDesk()" 
+          style="margin-bottom:20px; background:#222; color:white; border:none; padding:8px 14px; cursor:pointer;">
+    ← Back to Trade Desk
+  </button>
+
+  <!-- STATUS BUBBLE -->
+  <div class="status-bubble" onclick="toggleStatusPanel()">Copy Trade Status</div>
+
+  <div style="display:flex; gap:40px; flex-wrap:wrap;">
+    <!-- LEFT COLUMN: Info -->
+    <div style="flex:1; min-width:280px;">
+      <h1 style="margin-bottom:10px;">Jarvis Bubble Lab Copy Trader Program</h1>
+
+      <div style="
+          margin-top:12px;
+          max-width:760px;
+          background:rgba(77,163,255,0.08);
+          border-left:4px solid #4da3ff;
+          padding:14px 18px;
+          border-radius:6px;
+          color:#b9dcff;
+          font-size:14px;
+          line-height:1.6;
+        ">
+        <strong style="color:#7fc1ff;">How access works:</strong><br>
+        Copy trade access is tied automatically to your Jarvis account. No extra passwords or Machine ID needed.<br>
+        Download the Listener, install it in NinjaTrader, and you’re ready to copy trades securely and safely.
+      </div>
+
+      <p p style="color:#bbb;">
+        Download the ListenerBridge.cs file, 
+        <br> then copy it into your NinjaTrader 8 folder: <code >Documents\NinjaTrader 8\bin\Custom\Strategies </code>
+        <br><br> Now, open NinjaTrader → Tools → NinjaScript Editor → Compile. 
+        <br> Once compiled successfully, the Listener will connect to Jarvis for copy trading.
+      </p>
+
+      <!-- DOWNLOAD LISTENER -->
+      <div style="margin-top:20px;">
+        <h3>Step 1: Download Listener</h3>
+        <button onclick="downloadListenerBridge()"
+                style="background:#4da3ff; color:black; padding:10px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">
+          Download ListenerBridge.cs
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Form / Dashboard -->
+    <div style="flex:1; min-width:300px;">
+      <!-- COPYTRADE REGISTRATION -->
+      <div id="copytradeRegistration" style="display:block;">
+        <h2>Step 2: Activate Copy Trader</h2>
+
+        <label>Platform</label>
+        <input id="platform" type="text" style="width:100%; margin-bottom:10px;" placeholder="NinjaTrader">
+
+        <label>Account Type (SIM / LIVE)</label>
+        <input id="accountType" type="text" style="width:100%; margin-bottom:20px;" placeholder="SIM">
+
+        <button onclick="submitCopyTradeRegistration()"
+                style="background:#4da3ff; color:black; border:none; padding:10px 18px; font-weight:bold; width:100%;">
+          Activate Copy Trader
+        </button>
+      </div>
+
+      <!-- COPYTRADER DASHBOARD -->
+      <div id="copytradeDashboard" style="display:none; margin-top:20px;">
+        <h2>Your Copy Trader Dashboard</h2>
+        <div id="accountsList" style="margin-top:20px;"></div>
+        <p id="trialNotice" style="margin-top:16px; color:#7dd3fc;"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ================= SECTION MANAGEMENT =================
+    function openCopyTradeSection() {
+      hideAllSections();
+      document.getElementById("copytradeSection").style.display = "block";
+      loadCopyTradeStatus();
+    }
+
+    function returnToTradeDesk() {
+      hideAllSections();
+      document.getElementById("dashboard").style.display = "block";
+    }
+
+    function hideAllSections() {
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("copytradeSection").style.display = "none";
+    }
+
+    // ================= COPY TRADE LOGIC =================
+    function showCopyTradeMessage(msg) {
+      const el = document.getElementById('copytradeMessage');
+      el.innerText = msg;
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 5000);
+    }
+
+    function submitCopyTradeRegistration() {
+      const platform = document.getElementById('platform').value.trim();
+      const accountType = document.getElementById('accountType').value.trim();
+      if (!platform || !accountType) {
+        showCopyTradeMessage("Please fill in platform and account type.");
+        return;
+      }
+
+      google.script.run.withSuccessHandler(() => {
+        document.getElementById('copytradeRegistration').style.display = 'none';
+        document.getElementById('copytradeDashboard').style.display = 'block';
+        loadCopyTradeStatus();
+        showCopyTradeMessage("Copy Trader activated! Your trial is live for 3 days.");
+      }).activateCopyTrader(currentUserId, platform, accountType);
+    }
+
+    function loadCopyTradeStatus() {
+      google.script.run.withSuccessHandler((accounts) => {
+        const list = document.getElementById('accountsList');
+        list.innerHTML = '';
+        const now = new Date();
+
+        accounts.forEach(acc => {
+          const trialEnd = new Date(acc.trialEnd);
+          const expired = now > trialEnd;
+
+          // Account card
+          const card = document.createElement('div');
+          card.className = 'status-card';
+          card.style.marginBottom = '12px';
+          card.style.padding = '12px';
+          card.style.background = 'rgba(77,163,255,0.08)';
+          card.style.borderLeft = '4px solid #4da3ff';
+          card.innerHTML = `
+            <strong>${acc.accountName}</strong> (${acc.platform} - ${acc.accountType})<br>
+            Status: ${acc.enabled ? '🟢 Connected' : '🔴 Offline'}<br>
+            Last Execution: ${acc.lastExecutionTime || 'N/A'}<br>
+            Trial: ${expired ? '❌ Expired' : '✔ Active until ' + trialEnd.toLocaleString()}
+          `;
+
+          list.appendChild(card);
+
+          // Trial expiry
+          if (expired) {
+            document.getElementById('trialNotice').innerHTML = `
+              Your trial for ${acc.accountName} has ended. Jarvis will guide you to checkout.
+            `;
+          }
+        });
+      }).getCopyAccounts(currentUserId);
+    }
+
+    // ================= DYNAMIC LISTENER DOWNLOAD =================
+    function downloadListenerBridge() {
+      const listenerContent = `using System;
+      using System.Collections.Generic;
+      using System.Threading;
+      using System.Threading.Tasks;
+      using NinjaTrader.Gui;         // For Dispatcher
+      using NinjaTrader.NinjaScript; // For NT API access
+
+      namespace JarvisListenerBridge
+      {
+          public class ExecutionEvent
+          {
+              public string UserId { get; set; }
+              public string AccountId { get; set; }
+              public string Type { get; set; } // LONG, SHORT, CLOSE
+              public double EntryPrice { get; set; }
+              public double StopLoss { get; set; }
+              public double TakeProfit { get; set; }
+              public DateTime Timestamp { get; set; }
+          }
+
+          public class ExecutionQueue
+          {
+              private Queue<ExecutionEvent> queue = new Queue<ExecutionEvent>();
+              private readonly object _lock = new object();
+
+              public void Enqueue(ExecutionEvent evt)
+              {
+                  lock (_lock)
+                  {
+                      queue.Enqueue(evt);
+                  }
+              }
+
+              public ExecutionEvent Dequeue()
+              {
+                  lock (_lock)
+                  {
+                      if (queue.Count > 0) return queue.Dequeue();
+                      return null;
+                  }
+              }
+
+              public int Count
+              {
+                  get { lock (_lock) { return queue.Count; } }
+              }
+          }
+
+          public class ListenerBridge
+          {
+              private CancellationTokenSource cancellationTokenSource;
+              private ExecutionQueue executionQueue = new ExecutionQueue();
+              private bool isExecutionActive = false;
+              private readonly object executionLock = new object();
+
+              private bool killSwitch = false; // Emergency stop
+              private bool activeExecutionInProgress = false;
+
+              private int pollIntervalMs = 10000; // default 10 seconds
+
+              public ListenerBridge()
+              {
+                  cancellationTokenSource = new CancellationTokenSource();
+                  StartListener();
+                  StartQueueProcessor();
+              }
+
+              #region Listener Thread
+              private void StartListener()
+              {
+                  Task.Run(async () =>
+                  {
+                      while (!cancellationTokenSource.IsCancellationRequested)
+                      {
+                          try
+                          {
+                              var events = await FetchServerEvents();
+                              foreach (var evt in events)
+                              {
+                                  executionQueue.Enqueue(evt);
+                              }
+                          }
+                          catch (Exception ex)
+                          {
+                              Logger.Log("[Listener] Polling error: " + ex.Message);
+                          }
+
+                          int delay = activeExecutionInProgress ? 2000 : pollIntervalMs;
+                          await Task.Delay(delay);
+                      }
+                  });
+              }
+
+              private async Task<List<ExecutionEvent>> FetchServerEvents()
+              {
+                  // TODO: Replace with actual API call to JBL
+                  await Task.Delay(100); // simulate network latency
+                  return new List<ExecutionEvent>(); // empty for skeleton
+              }
+              #endregion
+
+              #region Queue Processor
+              private void StartQueueProcessor()
+              {
+                  Task.Run(async () =>
+                  {
+                      while (!cancellationTokenSource.IsCancellationRequested)
+                      {
+                          var evt = executionQueue.Dequeue();
+                          if (evt != null)
+                          {
+                              await Dispatcher.InvokeAsync(() =>
+                              {
+                                  try
+                                  {
+                                      SubmitOrCancelOrders(evt);
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      Logger.Log("[NT] Execution failed: " + ex.Message);
+                                      RetryOrFail(evt);
+                                  }
+                              });
+                          }
+                          else
+                          {
+                              await Task.Delay(100);
+                          }
+                      }
+                  });
+              }
+              #endregion
+
+              #region Order Execution
+              private void SubmitOrCancelOrders(ExecutionEvent evt)
+              {
+                  if (killSwitch)
+                  {
+                      Logger.Log("[NT] Kill switch active, skipping execution.");
+                      return;
+                  }
+
+                  lock (executionLock)
+                  {
+                      if (isExecutionActive)
+                      {
+                          Logger.Log("[NT] Execution skipped, already in progress.");
+                          return;
+                      }
+
+                      isExecutionActive = true;
+                      activeExecutionInProgress = true;
+
+                      try
+                      {
+                          ExecuteEvent(evt);
+                          UpdateDashboardIndicator(evt.UserId, true); // green dot
+                      }
+                      catch
+                      {
+                          UpdateDashboardIndicator(evt.UserId, false); // red dot
+                          throw;
+                      }
+                      finally
+                      {
+                          isExecutionActive = false;
+                          activeExecutionInProgress = false;
+                      }
+                  }
+              }
+
+              private void ExecuteEvent(ExecutionEvent evt)
+              {
+                  // TODO: Implement SubmitOrder / Bracket logic
+                  // Example:
+                  // SubmitOrder(OrderAction.Buy, evt.EntryPrice, evt.StopLoss, evt.TakeProfit);
+              }
+
+              private void RetryOrFail(ExecutionEvent evt)
+              {
+                  // TODO: implement retry rules (exponential backoff, max attempts)
+              }
+              #endregion
+
+              #region Kill Switch / Emergency Flatten
+              public void ActivateKillSwitch()
+              {
+                  killSwitch = true;
+                  CancelAllOrders();
+              }
+
+              public void DeactivateKillSwitch()
+              {
+                  killSwitch = false;
+              }
+
+              private void CancelAllOrders()
+              {
+                  Dispatcher.InvokeAsync(() =>
+                  {
+                      // TODO: Flatten all positions safely
+                      Logger.Log("[NT] All orders flattened due to kill switch.");
+                  });
+              }
+              #endregion
+
+              #region Dashboard Indicator
+              private void UpdateDashboardIndicator(string userId, bool success)
+              {
+                  // TODO: Update green/red dot on JBL dashboard for given user
+              }
+              #endregion
+
+              #region Shutdown
+              public void Shutdown()
+              {
+                  cancellationTokenSource.Cancel();
+                  CancelAllOrders();
+              }
+              #endregion
+          }
+
+          public static class Logger
+          {
+              public static void Log(string message)
+              {
+                  Console.WriteLine($"[{DateTime.Now}] {message}");
+              }
+          }
+      }
+
+            `;
+            const blob = new Blob([listenerContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ListenerBridge.cs';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+    }
+
+  </script>
+</section>
