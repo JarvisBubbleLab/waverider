@@ -1,0 +1,361 @@
+<!-- ================= AFFILIATE ================= -->  
+<section id="affiliateSection" style="display:none; padding:40px; background:#0b0f17; min-height:100vh;">
+
+  <!-- GLOBAL MESSAGE -->
+  <div id="affiliateMessage" style="
+      margin-bottom:20px;
+      padding:12px 16px;
+      background:rgba(77,163,255,0.12);
+      border-left:4px solid #4da3ff;
+      border-radius:6px;
+      color:#b9dcff;
+      font-size:14px;
+      display:none;
+    "></div>
+
+  <button onclick="returnToTradeDesk()" 
+          style="margin-bottom:20px; background:#222; color:white; border:none; padding:8px 14px; cursor:pointer;">
+    ← Back to Trade Desk
+  </button>
+
+  <div style="display:flex; gap:40px; flex-wrap:wrap;">
+    <!-- LEFT COLUMN: Info -->
+    <div style="flex:1; min-width:280px;">
+      <h1 style="margin-bottom:10px;">Jarvis Bubble Lab Affiliate Program</h1>
+
+      <div style="
+          margin-top:12px;
+          max-width:760px;
+          background:rgba(77,163,255,0.08);
+          border-left:4px solid #4da3ff;
+          padding:14px 18px;
+          border-radius:6px;
+          color:#b9dcff;
+          font-size:14px;
+          line-height:1.6;
+        ">
+        <strong style="color:#7fc1ff;">How access works:</strong><br>
+        Your affiliate access is automatically tied to your Jarvis Bubble Lab account.
+        No extra passwords, no downloads, no setup steps.
+        Everything is securely managed inside your Trade Desk.
+      </div>
+
+      <p style="max-width:700px; color:#bbb; margin-top:16px;">
+        Earn commissions by creating real educational content and sharing Jarvis Bubble Lab with your audience.
+      </p>
+    </div>
+
+    <!-- RIGHT COLUMN: Form / Dashboard -->
+    <div style="flex:1; min-width:300px;">
+      <!-- AFFILIATE REGISTRATION -->
+      <div id="affiliateRegistration" style="display:none;">
+        <h2>Affiliate Registration</h2>
+
+        <label>Full Name</label>
+        <input id="affiliateName" type="text" style="width:100%; margin-bottom:10px;">
+
+        <label>PayPal Email</label>
+        <input id="affiliatePaypal" type="email" style="width:100%; margin-bottom:10px;">
+
+        <label>Stripe ID (optional)</label>
+        <input id="affiliateStripe" type="text" style="width:100%; margin-bottom:20px;">
+
+        <button onclick="submitAffiliateRegistration()"
+                style="background:#4da3ff; color:black; border:none; padding:10px 18px; font-weight:bold; width:100%;">
+          Activate Affiliate Account
+        </button>
+      </div>
+
+      <!-- AFFILIATE DASHBOARD -->
+      <div id="affiliateDashboard" style="display:none; margin-top:20px;">
+        <h2>Your Affiliate Dashboard</h2>
+
+        <div style="margin-top:20px;">
+          <strong>Affiliate ID:</strong> <span id="aff_id"></span><br>
+          <strong>20% Coupon:</strong> <span id="aff_20"></span>
+          <button onclick="copyText(aff_20.textContent)" style="margin-left:6px; background:#4da3ff; color:black; border:none; padding:4px 8px; cursor:pointer;">Copy</button><br>
+          <strong>10% Coupon:</strong> <span id="aff_10"></span>
+          <button onclick="copyText(aff_10.textContent)" style="margin-left:6px; background:#4da3ff; color:black; border:none; padding:4px 8px; cursor:pointer;">Copy</button>
+        </div>
+
+        <div style="margin-top:20px;">
+          <h3>Your Affiliate Link</h3>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <input id="affiliateLink" style="flex:1;" readonly>
+            <button onclick="copyAffiliateLink()" 
+                    style="background:#4da3ff; color:black; border:none; padding:8px 14px; font-weight:bold; cursor:pointer;">
+              Copy Link
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI TABLES -->
+        <div style="margin-top:40px;">
+          <h3>Performance</h3>
+          <p>Clicks, sales, and commissions will appear here in real time.</p>
+
+          <div class="kpi-row" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Clicks<br><span id="kClicks">0</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Sales<br><span id="kSales">0</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Conv %<br><span id="kConv">0%</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Revenue<br>$<span id="kRev">0</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Frozen<br>$<span id="kFrozen">0</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Payable<br>$<span id="kPayable">0</span></div>
+          </div>
+
+          <!-- TRAFFIC PERFORMANCE -->
+          <h4 style="margin-top:30px;">Traffic Performance</h4>
+          <table id="trafficTable" style="width:100%; border-collapse:collapse; color:#fff;">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Campaign</th>
+                <th>Clicks</th>
+                <th>Sales</th>
+                <th>Conv %</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <!-- SALES & COMMISSIONS -->
+          <h4 style="margin-top:30px;">Sales & Commissions</h4>
+          <table id="salesTable" style="width:100%; border-collapse:collapse; color:#fff;">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>License</th>
+                <th>Sale</th>
+                <th>Rate</th>
+                <th>Commission</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- CAMPAIGN BUILDER -->
+        <h3 style="margin-top:50px;">Campaign Builder</h3>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; max-width:700px;">
+          <input id="cmpName" placeholder="Campaign name" style="flex:2; padding:8px;">
+          <select id="cmpPlatform" style="flex:1; padding:8px;">
+            <option value="twitter">X / Twitter</option>
+            <option value="youtube">YouTube</option>
+            <option value="discord">Discord</option>
+            <option value="email">Email</option>
+          </select>
+          <select id="cmpCoupon" style="flex:1; padding:8px;">
+            <option value="20">20% Coupon</option>
+            <option value="10">10% Coupon</option>
+          </select>
+          <button onclick="createCampaign()" style="background:#4da3ff; border:none; padding:10px 16px; font-weight:bold;">Create</button>
+        </div>
+
+        <div id="campaignList" style="margin-top:30px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ================= SECTION MANAGEMENT =================
+    function openAffiliateSection() {
+      hideAllSections();
+      document.getElementById("affiliateSection").style.display = "block";
+      loadAffiliateStatus();
+    }
+
+    function returnToTradeDesk() {
+      hideAllSections();
+      const dashboard = document.getElementById("dashboard");
+      dashboard.style.display = "block";
+
+      // HIDE CHILD PANELS INSIDE DASHBOARD
+      const copyTradeSection = dashboard.querySelector('#copyTradeSection');
+      if (copyTradeSection) copyTradeSection.style.display = 'none';
+
+      const otherSubPanels = dashboard.querySelectorAll('.sub-panel');
+      otherSubPanels.forEach(p => p.style.display = 'none');
+    }
+
+    // ================= GLOBAL SECTION HIDER =================
+    function hideAllSections() {
+      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+    }
+
+
+    // ================= AFFILIATE STATUS =================
+    function loadAffiliateStatus() {
+      const userID = localStorage.getItem("jarvis_userid");
+      if (!userID) { showAffiliateMessage("No user ID found — affiliate disabled."); return; }
+
+      google.script.run.withSuccessHandler(affiliate => {
+        const reg = document.getElementById("affiliateRegistration");
+        const dash = document.getElementById("affiliateDashboard");
+
+        if (affiliate && affiliate.affiliateID) {
+          reg.style.display = "none";
+          dash.style.display = "block";
+          showAffiliateDashboard(affiliate);
+          loadAffiliateDashboard(affiliate.affiliateID);
+        } else {
+          reg.style.display = "block";
+          dash.style.display = "none";
+        }
+      }).getAffiliateByUser(userID);
+    }
+
+    // ================= DASHBOARD DISPLAY =================
+    function showAffiliateDashboard(affiliate) {
+      document.getElementById("affiliateRegistration").style.display = "none";
+      document.getElementById("affiliateDashboard").style.display = "block";
+      document.getElementById("aff_id").textContent = affiliate.affiliateID;
+      document.getElementById("aff_20").textContent = affiliate.code20;
+      document.getElementById("aff_10").textContent = affiliate.code10;
+      document.getElementById("affiliateLink").value = `${window.location.origin}?ref=${affiliate.affiliateID}`;
+
+      google.script.run.withSuccessHandler(campaigns => {
+        campaignList.innerHTML = "";
+        campaigns.forEach(c => {
+          renderCampaign({
+            name: c.name,
+            platform: c.platform,
+            coupon: c.coupon,
+            link: `${window.location.origin}?ref=${affiliate.affiliateID}&src=${c.platform}&cmp=${c.campaignID}`
+          });
+        });
+      }).getAffiliateCampaigns(affiliate.affiliateID);
+    }
+
+    // ================= REGISTRATION =================
+    function submitAffiliateRegistration() { 
+      const name = affiliateName.value.trim();
+      const paypal = affiliatePaypal.value.trim();
+      const stripe = affiliateStripe.value.trim();
+      const userID = localStorage.getItem("jarvis_userid");
+      if (!name || !paypal) { showAffiliateMessage("Name and PayPal email are required."); return; }
+
+      google.script.run.withSuccessHandler(existing => {
+        if (existing && existing.affiliateID) {
+          showAffiliateDashboard(existing);
+          loadAffiliateDashboard(existing.affiliateID);
+          showAffiliateMessage("You are already an affiliate!");
+        } else {
+          google.script.run.withSuccessHandler(res => {
+            showAffiliateDashboard(res);
+            loadAffiliateDashboard(res.affiliateID);
+            showAffiliateMessage("Affiliate account activated!");
+          }).registerAffiliate(userID, name, paypal, stripe);
+        }
+      }).getAffiliateByUser(userID);
+    }
+
+    // ================= DASHBOARD DATA =================
+    function loadAffiliateDashboard(affiliateID) {
+      google.script.run.withSuccessHandler(data => {
+        const k = data.kpis;
+        kClicks.textContent = k.clicks;
+        kSales.textContent = k.sales;
+        kConv.textContent = (k.conversionRate * 100).toFixed(1) + "%";
+        kRev.textContent = k.revenue.toFixed(2);
+        kFrozen.textContent = k.frozen.toFixed(2);
+        kPayable.textContent = k.payable.toFixed(2);
+
+        const tBody = document.querySelector("#trafficTable tbody");
+        tBody.innerHTML = "";
+        data.traffic.forEach(r => {
+          const rate = r.clicks ? ((r.conversions / r.clicks) * 100).toFixed(1) : "0";
+          tBody.innerHTML += `<tr><td>${r.source}</td><td>${r.campaign}</td><td>${r.clicks}</td><td>${r.conversions}</td><td>${rate}%</td></tr>`;
+        });
+
+        const sBody = document.querySelector("#salesTable tbody");
+        sBody.innerHTML = "";
+        data.sales.forEach(r => {
+          sBody.innerHTML += `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.user}</td><td>${r.license}</td><td>$${r.sale}</td><td>${(r.rate * 100)}%</td><td>$${r.commission.toFixed(2)}</td><td>${r.status}</td></tr>`;
+        });
+      }).getAffiliateDashboardData(affiliateID);
+    }
+
+    // ================= CAMPAIGN CREATION =================
+    function createCampaign() {
+      const affiliateID = document.getElementById("aff_id").textContent.trim().toUpperCase(); 
+      const name = cmpName.value.trim();
+      const platform = cmpPlatform.value;
+      const coupon = cmpCoupon.value === "20" ? aff_20.textContent : aff_10.textContent;
+
+      if (!name) { 
+        showAffiliateMessage("Campaign name required."); 
+        return; 
+      }
+
+      google.script.run.withSuccessHandler(res => {
+        renderCampaign({name, platform, coupon, link: res.trackingLink});
+        cmpName.value = "";
+        showAffiliateMessage("Campaign created successfully!");
+      }).createAffiliateCampaign({
+        affiliateID,
+        name,
+        platform,
+        coupon,
+        baseUrl: window.location.origin
+      });
+    }
+
+    function renderCampaign(c) {
+      const div = document.createElement("div");
+      div.style.marginBottom = "20px";
+      div.style.padding = "16px";
+      div.style.background = "#0f172a";
+      div.style.borderRadius = "10px";
+
+      const text = `Trading with Jarvis Bubble Lab — clean ORB entries & real risk control.\nUse code ${c.coupon}\n👇\n${c.link}`;
+
+      div.innerHTML = `
+        <strong>${c.name}</strong> <span style="opacity:.6">(${c.platform})</span><br><br>
+        <input value="${c.link}" style="width:100%; margin-bottom:10px;" readonly>
+        <button onclick="shareX(\`${text}\`)">🐦 Share</button>
+        <button onclick="copyText(\`${text}\`)">📋 Copy</button>
+      `;
+      campaignList.prepend(div);
+    }
+
+    function shareX(text) {
+      window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
+    }
+
+    // ================= COPY / MESSAGE =================
+    function copyAffiliateLink() {
+      const input = document.getElementById("affiliateLink");
+      input.select();
+      input.setSelectionRange(0, 99999);
+
+      navigator.clipboard.writeText(input.value)
+        .then(() => showAffiliateMessage("Affiliate link copied!"))
+        .catch(() => showAffiliateMessage("Unable to copy link, please copy manually."));
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text)
+        .then(() => showAffiliateMessage("Text copied to clipboard!"))
+        .catch(() => showAffiliateMessage("Unable to copy text."));
+    }
+
+    function showAffiliateMessage(msg) {
+      const div = document.getElementById("affiliateMessage");
+      div.textContent = msg;
+      div.style.display = "flex";
+      div.style.opacity = 1;
+      setTimeout(() => {
+        div.style.transition = "opacity 0.5s ease";
+        div.style.opacity = 0;
+        setTimeout(() => div.style.display = "none", 500);
+      }, 4000);
+    }
+
+    function cancelAffiliateLink() {
+      showAffiliateMessage("Affiliate link has been canceled.");
+    }
+  </script>
+
+</section>
