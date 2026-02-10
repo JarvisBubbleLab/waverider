@@ -1,5 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Jarvis Bubble Lab</title>
+
+<style>
+/* ================= BASE ================= */
+body { margin:0; font-family:Arial,sans-serif; background:#0e1117; color:white; }
+
+/* ================= HEADER ================= */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 15px 30px;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-image {
+   width: 30%;
+   height: auto;
+   max-height: 250px;
+}
+
+.arrow-logo span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(to right, #00c8ff, #00ff9c);
+  margin-right: 3px;
+  border-radius: 2px;
+  animation: pulse 1.2s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.3); }
+}
+
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  display: flex;
+  justify-content: space-between;
+  background: #111;
+}
+
+.footer-bar {
+  width: 95%;
+  padding: 30px 60px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: white;
+}
+
+.footer-left p,
+.footer-right p {
+  margin: 4px 0;
+}
+
+.footer-center a.social-circle {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  margin: 0 5px;
+  border-radius: 50%;
+  text-align: center;
+  background: #222;
+  color: white;
+  text-decoration: none;
+}
+
+/* ================= SECTIONS ================= */
+section { display:none; padding:20px; }
+section.active { display:block; }
+
+/* (ALL other styles preserved exactly as provided) */
+</style>
+</head>
+
+<body>
+<script>
+  window.APP_CONTEXT = {
+    affiliateRef: "<?= AFFILIATE_REF ?>",
+    affiliateValid: <?= AFFILIATE_VALID ?>
+  };
+</script>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="logo-wrap">
+    <div class="arrow-logo">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <img 
+      src="https://lh3.googleusercontent.com/d/10C9W6vMqS_5WvsNWMPzPxGUrJPyh4_eM"
+      alt="Jarvis Bubble Lab"
+      class="logo-image"
+    />
+  </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="philosophy.html">Philosophy</a>
+    <a href="challenge.html">Challenge</a>
+    <a href="saas.html">Software / Licenses</a>
+    <a href="risk.html">Risk</a>
+  </nav>
+</header>
+
 <!-- ================= RISK ================= -->
-<section id="risk">
+<section id="risk" class="active">
   <div
     style="
       display:flex;
@@ -45,3 +170,688 @@
 
   </div>
 </section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer-bar">
+  <div class="footer-left">
+    <p>Jarvis Bubble Lab</p>
+    <p>Cleveland, OH</p>
+    <p>440-661-5487</p>
+    <p>© 2026 by Jarvis Bubble Lab.</p>
+  </div>
+
+  <div class="footer-center">
+    <a href="https://x.com/TheJarvisBubble" class="social-circle">X</a>
+    <a href="#" class="social-circle">T</a>
+    <a href="#" class="social-circle">F</a>
+    <a href="#" class="social-circle">I</a>
+  </div>
+
+  <div class="footer-right">
+    <p><a href="accessibility.html">Accessibility</a></p>
+    <p><a href="privacy.html">Privacy Policy</a></p>
+    <p><a href="refund.html">Refund Policy</a></p>
+    <p><a href="terms.html">Terms & Conditions</a></p>
+  </div>
+</footer>
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+  let currentUserId = null;
+
+// ================= VISITOR ID =================
+function getVisitorId() {
+  let v = localStorage.getItem('jarvis_visitor_id');
+  if (!v) {
+    v = 'anon_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    localStorage.setItem('jarvis_visitor_id', v);
+  }
+  return v;
+}
+
+// ================ NO TRADE UNTIL PASSWORD ==============
+// ================= PASSWORD / TRADE GUARD =================
+function setPasswordStatus(user) {
+  const hasPassword = !!user.Password;
+  localStorage.setItem('jarvis_has_password', hasPassword ? '1' : '0');
+}
+
+function canUserTrade() {
+  return localStorage.getItem('jarvis_has_password') === '1';
+}
+
+function showTradeBlockedMessage() {
+  const el = document.getElementById('openTrades');
+  if (!el) return;
+
+  el.innerHTML = `
+    <div style="
+      color:#ef4444;
+      font-weight:bold;
+      padding:12px;
+      border:1px solid #ef4444;
+      border-radius:8px;
+      background:rgba(239,68,68,0.08);
+      margin-top:8px;
+    ">
+      🔒 Trading Locked<br>
+      You need to create a password and secure your account in order to place trades.
+    </div>
+  `;
+}
+
+// ================= CHALLENGE HELPERS =================
+function hideAllChallengeSteps() {
+  challengeStepEmail.style.display = 'none';
+  challengeStepLogin.style.display = 'none';
+  challengeStepConfirm.style.display = 'none';
+}
+
+function showEmail() { show('challenge'); challengeStepEmail.style.display = 'block'; }
+function showLogin() { show('challenge'); challengeStepLogin.style.display = 'block'; }
+function showConfirm() { show('challenge'); challengeStepConfirm.style.display = 'block'; }
+
+// ================= MEMBER PASSWORD LOGIN =================
+function submitMemberPassword() {
+  const email = memberEmail.value.trim();
+  const pw = memberPassword.value.trim();
+  if (!email || !pw) return showLoginError('Enter email and password');
+
+  loginLoading.style.display = 'block';
+
+  google.script.run.withSuccessHandler(user => {
+    loginLoading.style.display = 'none';
+    if (!user) return showLoginError('Invalid login');
+
+    // ✅ Store credentials + userID for affiliate
+    localStorage.setItem('jarvis_logged_in', '1');
+    localStorage.setItem('jarvis_email', email);
+    if (user.UserID) {
+      localStorage.setItem('jarvis_userid', user.UserID);
+    }
+
+    loadDashboard(user);
+  }).getMemberLogin(email, pw);
+}
+
+function showLoginError(msg) {
+  loginError.innerText = msg;
+  loginError.style.display = 'block';
+}
+
+// ================= EMAIL CHALLENGE =================
+function submitChallengeEmail() {
+  const email = challengeEmail.value.trim();
+  if (!email) return alert('Email required');
+
+  localStorage.setItem('jarvis_email', email);
+  challengeLoading.style.display = 'block';
+
+  google.script.run.withSuccessHandler(user => {
+    // Immediately load dashboard for new users to show password box
+    loadDashboard(user);
+  }).getOrCreateUser(email, getVisitorId());
+}
+
+function enterDashboardFromChallenge() {
+  google.script.run.withSuccessHandler(user => {
+    localStorage.setItem('jarvis_logged_in', '1');
+    loadDashboard(user);
+  }).getOrCreateUser(localStorage.getItem('jarvis_email'), getVisitorId());
+}
+
+// ================= DASHBOARD =================
+function toggleStatusPanel() {
+  document.getElementById('status-panel').classList.toggle('open');
+}
+
+function loadDashboard(user) {
+  setPasswordStatus(user);
+
+  if (!user || !user.UserID) return alert('UserID missing');
+
+  currentUserId = user.UserID;
+
+  show('dashboard');
+  document.body.classList.add('dashboard-mode');
+
+  // SNAPSHOT (email + visits immediately)
+  document.getElementById('snapshotEmail').innerText = user.Email || 'Guest';
+  document.getElementById('snapshotVisits').innerText = user.Visits || '0';
+
+  if (!user.Password) {
+  passwordBox.style.display = 'block';
+  showTradeBlockedMessage();
+  }
+
+  // BALANCE (authoritative)
+  google.script.run.withSuccessHandler(balance => {
+    document.getElementById('snapshotBalance').innerText =
+      Number(balance || 0).toFixed(2);
+  }).getUserTodayBalance(user.UserID);
+
+  // FULL USER + CALENDAR (parallel, same load phase)
+  google.script.run.withSuccessHandler(full => {
+    if (!full || !full.user) {
+      console.error('Full user data missing', full);
+      return;
+    }
+
+    user.licenses = full.licenses || [];
+    user.products = full.products || {};
+    user.AffiliateID = full.user.AffiliateID || '';
+
+    renderStatusPanel(user);
+
+  }).getFullUserData(user.UserID);
+}
+
+// ================= MODE UI =================
+function setModes(modes) {
+  document.querySelectorAll('[data-mode]').forEach(el => {
+    const key = el.dataset.mode;
+    const enabled = modes[key];
+    el.className = enabled ? 'allowed' : 'locked';
+    el.innerText = (enabled ? '✔ ' : '✖ ') + el.dataset.label;
+  });
+}
+
+// ================= TRADES =================
+let tradeState = {
+  active: false,
+  tradeId: null,
+  entryPrice: null,
+  side: null
+};
+
+function updateButtons() {
+  document.querySelector('.long').disabled = tradeState.active;
+  document.querySelector('.short').disabled = tradeState.active;
+  document.querySelector('.close').disabled = !tradeState.active;
+}
+
+function act(action) {
+  const userId = localStorage.getItem('jarvis_userid');
+  if (!userId) return alert('Not logged in');
+
+    // 🔒 PASSWORD GUARD
+  if (!canUserTrade()) {
+    showTradeBlockedMessage();
+    return;
+  }
+
+  document.getElementById('message').innerText = 'Processing...';
+
+  google.script.run
+    .withSuccessHandler(res => {
+      document.getElementById('message').innerText = res.message;
+
+      if (res.state === 'OPEN') {
+        tradeState.active = true;
+        tradeState.tradeId = res.tradeId;
+        tradeState.entryPrice = res.entry;
+        tradeState.side = res.side;
+
+        document.getElementById('prices').innerText =
+          `Entry: ${res.entry} | SL: ${res.sl} | TP: ${res.tp}`;
+      }
+
+      if (res.state === 'CLOSED') {
+        tradeState.active = false;
+        tradeState.tradeId = null;
+
+        document.getElementById('prices').innerText =
+          `Closed @ ${Number(res.exit).toFixed(2)} | P/L:$ ${Number(res.pl).toFixed(2)}`;
+
+
+        // 🔥 REAL-TIME BALANCE UPDATE
+        if (res.balance !== undefined) {
+          document.getElementById('snapshotBalance').innerText =
+            Number(res.balance).toFixed(2);
+        }
+      }
+
+      updateButtons();
+    })
+    .withFailureHandler(err => {
+      document.getElementById('message').innerText = err.message;
+    })
+    .handleTradeAction({
+      action,
+      userId,
+      tradeId: tradeState.tradeId
+    });
+}
+
+updateButtons();
+
+// ================= NAVIGATION =================
+function show(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ================= PASSWORD =================
+function savePassword() {
+  const pwInput = document.getElementById('pw');
+  const password = pwInput.value.trim();
+  const email = localStorage.getItem('jarvis_email');
+  if (!password) return alert('Please enter a password');
+  if (!email) return alert('Session expired. Please restart.');
+
+  const pwStatus = document.getElementById('pwStatus');
+  const saveBtn = document.getElementById('savePwBtn');
+
+  pwStatus.style.display = 'block';
+  pwStatus.innerText = 'Saving password…';
+  saveBtn.disabled = true;
+
+  google.script.run
+    .withSuccessHandler(() => {
+  pwStatus.innerText = 'Password saved!';
+  localStorage.setItem('jarvis_has_password', '1');
+
+  setTimeout(() => {
+    document.getElementById('passwordBox').style.display = 'none';
+
+    // 🔓 Clear lock message
+    const el = document.getElementById('openTrades');
+    if (el) el.innerHTML = 'No open trades.';
+  }, 800);
+  })
+
+    .withFailureHandler(err => {
+      console.error(err);
+      pwStatus.innerText = 'Unable to save password';
+      saveBtn.disabled = false;
+    })
+    .setPassword(email, password);
+}
+
+// ================= TESTIMONIALS =================
+function loadTestimonials() {
+  google.script.run.withSuccessHandler(data => {
+    const grid = document.getElementById('testimonial-grid');
+    grid.innerHTML = '';
+    if (!data || !data.length) { grid.innerHTML = '<p>Testimonials coming soon.</p>'; return; }
+    data.forEach(t => {
+      const div = document.createElement('div');
+      div.className = 'testimonial-item';
+      div.innerHTML = `<p>${t.Testimonial}</p><strong>— ${t.DisplayName}</strong>`;
+      grid.appendChild(div);
+    });
+  }).getTestimonials();
+}
+
+// ================= LOGOUT =================
+function logout() {
+  localStorage.removeItem('jarvis_logged_in');
+
+  // Hide dashboard
+  const dashboard = document.getElementById('dashboard');
+  if (dashboard) dashboard.style.display = 'none';
+
+  // Show login form
+  const landing = document.getElementById('challengeLanding');
+  if (landing) landing.style.display = 'block';
+
+  // Prefill email
+  const email = localStorage.getItem('jarvis_email');
+  if (email) document.getElementById('loginEmail').value = email;
+
+  if (typeof loadTestimonials === 'function') loadTestimonials();
+}
+
+// ================= LOGIN =================
+function submitLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw = document.getElementById('loginPassword').value.trim();
+
+  if (!email || !pw) return showLoginError('Enter email and password');
+
+  // Optional loading indicator
+  if (typeof loginLoading !== 'undefined') loginLoading.style.display = 'block';
+
+  google.script.run.withSuccessHandler(user => {
+    if (typeof loginLoading !== 'undefined') loginLoading.style.display = 'none';
+    if (!user) return showLoginError('Invalid login');
+
+    // ✅ Store credentials
+    localStorage.setItem('jarvis_logged_in', '1');
+    localStorage.setItem('jarvis_email', email);
+    if (user.UserID) localStorage.setItem('jarvis_userid', user.UserID);
+
+    // Hide login form
+    document.getElementById('challengeLanding').style.display = 'none';
+
+    // Show dashboard
+    const dashboard = document.getElementById('dashboard');
+    if (dashboard) dashboard.style.display = 'block';
+
+    // Load dashboard content
+    if (typeof loadDashboard === 'function') loadDashboard(user);
+
+  }).getMemberLogin(email, pw);
+}
+
+
+// ================= ERROR HANDLING =================
+function showLoginError(msg) {
+  const err = document.getElementById('loginError');
+  err.textContent = msg;
+  err.style.display = 'block';
+}
+
+// ================= RENDER =================
+function renderStatusPanel(user) {
+  // ---------------- BASIC INFO ----------------
+  document.getElementById('statusEmail').innerText = user.Email || '—';
+  document.getElementById('statusMembership').innerText =
+    user.AccountStatus || 'Member';
+
+  // ---------------- LICENSES ----------------
+  const licenses = user.licenses || [];
+  const activeLicenses = licenses.filter(l => l.Active);
+
+  document.getElementById('statusLicense').innerText =
+    activeLicenses.length
+      ? activeLicenses.map(l => `${l.ProductID} (${l.PurchasedLevel})`).join(', ')
+      : 'None';
+
+  // ---------------- TIER ----------------
+  const tier = activeLicenses.some(l =>
+    ['8Day','17Day','Subscription'].includes(l.PurchasedLevel)
+  ) ? 'Pro' : 'Member';
+
+  document.getElementById('statusTier').innerText = tier;
+
+  // ---------------- MODE LEVELS ----------------
+  const products = user.products || {};
+  const modeLevels = document.getElementById('modeLevels');
+  modeLevels.innerHTML = '';
+
+  const modes = [
+    { key: 'LearnJarvis', label: 'DESK Mode' },
+    { key: 'OrbTradeIDNumber', label: 'ORB Trading' },
+    { key: 'ATRPullbackIDNumber', label: 'ATR Pullback' },
+    { key: 'BuildYourOwnIDNumber', label: 'Build-Your-Own' },
+    { key: '8DayIDNumber', label: '8-Day Strategy' },
+    { key: '17DayIDNumber', label: '17-Day Strategy' }
+  ];
+
+  modes.forEach(m => {
+    const p = document.createElement('p');
+    const enabled = products[m.key] === 'Active';
+    p.className = enabled ? 'allowed' : 'locked';
+    p.innerText = (enabled ? '✔ ' : '✖ ') + m.label;
+    modeLevels.appendChild(p);
+  });
+
+  // ---------------- PERMISSIONS ----------------
+  const permissionsList = document.getElementById('permissionsList');
+  permissionsList.innerHTML = '';
+
+  [
+    'Personal Trade Desk',
+    'Live Learn Jarvis Trades',
+    'Jarvis Phantom Copy Trading'
+  ].forEach(label => {
+    const li = document.createElement('li');
+    li.className = 'allowed';
+    li.innerText = '✔ ' + label;
+    permissionsList.appendChild(li);
+  });
+
+  // ---------------- UNLOCKABLE PATHS ----------------
+  const unlockList = document.getElementById('unlockableList');
+  unlockList.innerHTML = '';
+
+  const unlockables = [
+    { label: 'Affiliate Program', unlocked: !!user.AffiliateID },
+    { label: 'Strategy Upgrades', unlocked: tier !== 'Pro' },
+    { label: 'Institutional License', unlocked: false }
+  ];
+
+  unlockables.forEach(u => {
+    const li = document.createElement('li');
+    li.className = u.unlocked ? 'allowed' : 'locked';
+    li.innerText = (u.unlocked ? '✔ ' : '✖ ') + u.label;
+    unlockList.appendChild(li);
+  });
+
+  // ---------------- STATUS BUBBLE ----------------
+  document.querySelector('.status-bubble').innerText =
+    `Tier: ${tier} · MODE: DESK`;
+}
+
+// ================= CALENDAR =================
+function toggleCalendar(show) {
+  const jarvis = document.getElementById('jarvis-calendar');
+  const myCal = document.getElementById('my-calendar');
+
+  jarvis.style.display = 'none';
+  myCal.style.display = 'none';
+
+  if (show === 'my') {
+    myCal.style.display = 'block';
+
+    if (!myCal.dataset.loaded) {
+      loadMyCalendar(currentUserId);
+      myCal.dataset.loaded = '1';
+    }
+  }
+
+  if (show === 'jarvis') {
+    jarvis.style.display = 'block';
+
+    // Always reset to overview when returning
+    hideJanuary();
+  }
+}
+
+// ================= JANUARY TOGGLE =================
+function showJanuary() {
+  document.getElementById('jarvis-main-view').style.display = 'none';
+  document.getElementById('january-view').style.display = 'block';
+}
+
+function hideJanuary() {
+  document.getElementById('january-view').style.display = 'none';
+  document.getElementById('jarvis-main-view').style.display = 'block';
+}
+
+
+function populateCalendar(containerId, daily, monthly) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  // --- DAILY ---
+  const dailyButtons = Array.from(container.querySelectorAll('.day-btn')).slice(0, 25);
+  const recentDaily = daily.slice(-25); // last 25 entries
+  dailyButtons.forEach((btn, i) => {
+    const val = recentDaily[i];
+    btn.classList.remove('allowed', 'locked');
+    btn.innerHTML = btn.textContent.split('<')[0]; // reset label
+
+    if (val != null) {
+      btn.innerHTML += `<br>${Number(val).toFixed(2)} pts`;
+      btn.classList.add(val >= 0 ? 'allowed' : 'locked');
+    } else {
+      btn.innerHTML += `<br>—`;
+    }
+  });
+
+  // --- MONTHLY ---
+  const monthButtons = Array.from(container.querySelectorAll('.month-btn')).slice(0, 12);
+  monthButtons.forEach((btn, i) => {
+    const val = monthly[i];
+    btn.classList.remove('allowed', 'locked');
+    btn.innerHTML = btn.textContent.split('<')[0];
+
+    if (val != null) {
+      btn.innerHTML += `<br>${Number(val).toFixed(2)} pts`;
+      btn.classList.add(val >= 0 ? 'allowed' : 'locked');
+    } else {
+      btn.innerHTML += `<br>—`;
+    }
+  });
+}
+
+// Called after loadDashboard
+function loadMyCalendar(userId) {
+  if (!userId) return;
+
+  const container = document.getElementById('my-calendar');
+  const POINT_VALUE = 5; // $5 per point
+
+  google.script.run.withSuccessHandler(data => {
+    if (!data) {
+      container.innerHTML += '<p>No calendar data found.</p>';
+      return;
+    }
+
+    let html = `
+      <h3>
+        My Trade Results & Monthly Data 9:30am - 4pm
+        <button class="toggle-calendar" onclick="toggleCalendar('jarvis')">
+          Show Jarvis Overview
+        </button>
+      </h3>
+
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="border:1px solid #333; padding:6px;">Day / Month</th>
+            <th style="border:1px solid #333; padding:6px; text-align:right;">Points</th>
+            <th style="border:1px solid #333; padding:6px; text-align:right;">Cash Value</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === 'UserID') return;
+
+      const points = Number(value);
+      if (isNaN(points)) return;
+
+      const cash = points * POINT_VALUE;
+      const cashColor = cash >= 0 ? '#22c55e' : '#ef4444'; // green / red
+
+      html += `
+        <tr>
+          <td style="border:1px solid #333; padding:6px;">${key}</td>
+          <td style="border:1px solid #333; padding:6px; text-align:right;">
+            ${points.toFixed(2)} pts.
+          </td>
+          <td style="border:1px solid #333; padding:6px; text-align:right; color:${cashColor}; font-weight:bold;">
+            $${cash.toFixed(2)}
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `
+        </tbody>
+      </table>
+    `;
+
+    container.innerHTML = html;
+
+  }).getUserCalendar(userId);
+}
+
+
+
+
+// ================= AUTO-LOGIN + ACCOUNT SNAPSHOT + COPY DOTS =================
+window.addEventListener('load', () => {
+  // --- Parse URL params for affiliate tracking ---
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get("ref");
+  const campaign = params.get("campaign") || "direct";
+
+  if (ref && !localStorage.getItem("affiliate_ref")) {
+    localStorage.setItem("affiliate_ref", ref);
+    localStorage.setItem("affiliate_campaign", campaign);
+    console.log(`Affiliate ref saved: ${ref}, campaign: ${campaign}`);
+  }
+
+  // --- Get local storage values ---
+  const email = localStorage.getItem('jarvis_email') || '';
+  const visitorId = getVisitorId(); // Make sure this function exists
+  const loggedIn = localStorage.getItem('jarvis_logged_in') === '1';
+
+  // --- Call Apps Script to get or create user ---
+  google.script.run
+    .withSuccessHandler(user => {
+      if (!user) return;
+
+      // Store user ID locally
+      if (user.UserID) localStorage.setItem('jarvis_userid', user.UserID);
+
+      // --- Update Account Snapshot ---
+      const balanceEl = document.getElementById('snapshotBalance');
+      const visitsEl = document.getElementById('snapshotVisits');
+      if (balanceEl) balanceEl.textContent = `$${Number(user.Balance || 0).toLocaleString()}`;
+      if (visitsEl) visitsEl.textContent = Number(user.Visits || 0);
+
+      // --- Render Copy Accounts Dots ---
+      renderCopyDots(user.copyAccounts || []);
+
+      // --- Logged-in users go directly to dashboard ---
+      if (loggedIn) {
+        show('dashboard');
+        if (typeof loadDashboard === 'function') loadDashboard(user);
+      } else {
+        // --- Not logged in: determine challenge step ---
+        show('challenge');
+        hideAllChallengeSteps();
+
+        if (user.AccountStatus === 'member' && user.Password) {
+          // Returning member: show email + password login (Step 2)
+          challengeStepLogin.style.display = 'block';
+          memberEmail.value = user.Email || '';
+        } else {
+          // New user or no password: show email input (Step 1)
+          challengeStepEmail.style.display = 'block';
+          if (email) challengeEmail.value = email;
+        }
+      }
+
+      // --- Always load testimonials if function exists ---
+      if (typeof loadTestimonials === 'function') loadTestimonials();
+
+    })
+    .getOrCreateUser(email, visitorId); // Pass email & visitorId to Apps Script
+});
+
+// =======================
+// COPY DOTS RENDER FUNCTION
+// =======================
+function renderCopyDots(accounts) {
+  const container = document.getElementById('copyStatusDots');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  accounts.slice(0, 20).forEach(acc => {
+    const dot = document.createElement('div');
+    dot.className = 'copy-dot';
+
+    if (!acc.enabled) dot.classList.add('disabled');
+    else if (acc.status === 'Connected') dot.classList.add('online');
+    else if (acc.status === 'Offline') dot.classList.add('offline');
+    else dot.classList.add('unknown');
+
+    dot.title = `${acc.accountName} (${acc.platform})`;
+
+    container.appendChild(dot);
+  });
+}
+
+</script>
+
+
+</body>
+</html>
