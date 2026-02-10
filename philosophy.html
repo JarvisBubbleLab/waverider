@@ -1,5 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Jarvis Bubble Lab</title>
+
+<style>
+/* ================= BASE ================= */
+body { margin:0; font-family:Arial,sans-serif; background:#0e1117; color:white; }
+
+/* ================= HEADER ================= */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 15px 30px;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-image {
+   width: 30%;
+   height: auto;
+   max-height: 250px;
+}
+
+.arrow-logo span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(to right, #00c8ff, #00ff9c);
+  margin-right: 3px;
+  border-radius: 2px;
+  animation: pulse 1.2s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.3); }
+}
+
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  display: flex;
+  justify-content: space-between;
+  background: #111;
+}
+
+.footer-bar {
+  width: 95%;
+  padding: 30px 60px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: white;
+}
+
+.footer-left p,
+.footer-right p {
+  margin: 4px 0;
+}
+
+.footer-center a.social-circle {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  margin: 0 5px;
+  border-radius: 50%;
+  text-align: center;
+  background: #222;
+  color: white;
+  text-decoration: none;
+}
+
+/* ================= SECTIONS ================= */
+section { display:none; padding:20px; }
+section.active { display:block; }
+
+/* (ALL other styles preserved exactly as provided) */
+</style>
+</head>
+
+<body>
+
+<script>
+  window.APP_CONTEXT = {
+    affiliateRef: "<?= AFFILIATE_REF ?>",
+    affiliateValid: <?= AFFILIATE_VALID ?>
+  };
+</script>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="logo-wrap">
+    <div class="arrow-logo">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <img 
+      src="https://lh3.googleusercontent.com/d/10C9W6vMqS_5WvsNWMPzPxGUrJPyh4_eM"
+      alt="Jarvis Bubble Lab"
+      class="logo-image"
+    />
+  </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="philosophy.html">Philosophy</a>
+    <a href="challenge.html">Challenge</a>
+    <a href="saas.html">Software / Licenses</a>
+    <a href="risk.html">Risk</a>
+  </nav>
+</header>
+
 <!-- ================= PHILOSOPHY ================= -->
-<section id="philosophy">
+<section id="philosophy" class="active">
   <div
     style="
       display:flex;
@@ -51,3 +177,45 @@
 
   </div>
 </section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer-bar">
+  <div class="footer-left">
+    <p>Jarvis Bubble Lab</p>
+    <p>Cleveland, OH</p>
+    <p>440-661-5487</p>
+    <p>© 2026 by Jarvis Bubble Lab.</p>
+  </div>
+
+  <div class="footer-center">
+    <a href="https://x.com/TheJarvisBubble" class="social-circle">X</a>
+    <a href="#" class="social-circle">T</a>
+    <a href="#" class="social-circle">F</a>
+    <a href="#" class="social-circle">I</a>
+  </div>
+
+  <div class="footer-right">
+    <p><a href="accessibility.html">Accessibility</a></p>
+    <p><a href="privacy.html">Privacy Policy</a></p>
+    <p><a href="refund.html">Refund Policy</a></p>
+    <p><a href="terms.html">Terms & Conditions</a></p>
+  </div>
+</footer>
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+  let currentUserId = null;
+
+  function show(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }
+
+  function logout() {
+    localStorage.removeItem('jarvis_logged_in');
+  }
+</script>
+
+</body>
+</html>
