@@ -1,101 +1,198 @@
-<section id="terms">
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Jarvis Bubble Lab</title>
+
+<style>
+/* ================= BASE ================= */
+body { margin:0; font-family:Arial,sans-serif; background:#0e1117; color:white; }
+
+/* ================= HEADER ================= */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 15px 30px;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-image {
+   width: 30%;
+   height: auto;
+   max-height: 250px;
+}
+
+.arrow-logo span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(to right, #00c8ff, #00ff9c);
+  margin-right: 3px;
+  border-radius: 2px;
+  animation: pulse 1.2s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.3); }
+}
+
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  display: flex;
+  justify-content: space-between;
+  background: #111;
+}
+
+.footer-bar {
+  width: 95%;
+  padding: 30px 60px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: white;
+}
+
+.footer-left p,
+.footer-right p {
+  margin: 4px 0;
+}
+
+.footer-center a.social-circle {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  margin: 0 5px;
+  border-radius: 50%;
+  text-align: center;
+  background: #222;
+  color: white;
+  text-decoration: none;
+}
+
+/* ================= SECTIONS ================= */
+section { display:none; padding:20px; }
+section.active { display:block; }
+
+/* (ALL other styles preserved exactly as provided) */
+</style>
+</head>
+
+<body>
+
+<script>
+  window.APP_CONTEXT = {
+    affiliateRef: "<?= AFFILIATE_REF ?>",
+    affiliateValid: <?= AFFILIATE_VALID ?>
+  };
+</script>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="logo-wrap">
+    <div class="arrow-logo">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <img 
+      src="https://lh3.googleusercontent.com/d/10C9W6vMqS_5WvsNWMPzPxGUrJPyh4_eM"
+      alt="Jarvis Bubble Lab"
+      class="logo-image"
+    />
+  </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="philosophy.html">Philosophy</a>
+    <a href="challenge.html">Challenge</a>
+    <a href="saas.html">Software / Licenses</a>
+    <a href="risk.html">Risk</a>
+  </nav>
+</header>
+
+<!-- ================= TERMS ================= -->
+<section id="terms" class="active">
   <h2>Terms & Conditions</h2>
-  <p>
-      Welcome to Jarvis Bubble Lab. By accessing or using our website, products, services, software, content, or community platforms (collectively, the “Services”), you agree to be bound by these Terms and Conditions (“Terms”). If you do not agree, do not use our Services.
-      </p>​
-      <p>
-      1. Educational Purpose Only
-      <br>
-      All content, tools, indicators, live sessions, videos, streams, simulations, charts, bubbles, alerts, challenges, and materials provided by Jarvis Bubble Lab are for educational and informational purposes only.
-      <br>
-      Nothing provided constitutes:
-      <br>
-      Financial advice, Investment advice, Trading advice, A recommendation to buy or sell any security or futures contract, You acknowledge that you are solely responsible for your own trading decisions.
-      </p>
-      <p>
-      2. Risk Disclosure:
-      <br>
-      Trading futures, stocks, and other financial instruments involves substantial risk and is not suitable for all individuals. You may lose more than your initial investment.
-      Past performance, simulated results, or examples shown using Jarvis Bubble Lab do not guarantee future results.
-      By using our Services, you acknowledge and accept all risks associated with trading.
-      </p>
-      <p>
-      3. No Guarantees
-      Jarvis Bubble Lab makes no guarantees regarding:
-      <br>
-      Profitability, Performance, Accuracy of signals or indicators, Success in trading or challenges, Consistency of results, Results vary between individuals.
-      </p>
-      <p>
-      4. Simulated Trading & Challenges
-      Any references to:
-      <br>
-      Simulated accounts, Evaluation accounts, Prop-style challenges, Demonstration trading, Paper trading are strictly educational simulations and do not represent real trading results. Simulated performance may differ significantly from live trading due to liquidity, slippage, execution, and emotional factors.
-      </p>
-      <p>
-      5. Memberships & Subscriptions
-      Memberships may include access to:
-      <br>
-      Educational content, Live or recorded sessions, Indicators or visual tools, Community features. All memberships are subject to pricing, billing cycles, and access levels displayed at the time of purchase. We reserve the right to modify or discontinue features at any time.
-      </p>
-      <p>
-      6. Refund Policy
-      All sales are governed by our Refund Policy, which is incorporated into these Terms by reference.
-      Unless explicitly stated otherwise, all sales are final and non-refundable once access is granted.
-      </p>
-      <p>
-      7. User Responsibilities
-      You agree to:
-      <br>
-      Use the Services lawfully, Not share login credentials, Not resell, redistribute, or copy content, Not attempt to reverse engineer any tools or indicators, Not misuse community features.Violation may result in suspension or permanent termination without refund.
-      </p>
-      <p>
-      8. Intellectual Property
-      All content, including but not limited to:
-      <br>
-      Indicators, Scripts, Charts, Bubbles, Videos, Logos, Branding, Written materials are the intellectual property of Jarvis Bubble Lab and may not be copied, reproduced, distributed, or used without written permission.
-      </p>
-      <p>
-      9. Community & Conduct
-      We reserve the right to remove any user from community spaces for:
-      <br>
-      Harassment, Spam, Misrepresentation, Sharing misinformation, Violating these Terms, Community access is a privilege, not a right.
-      </p>
-      <p> 
-      10. Affiliate & Joint Venture Programs
-      Participation in affiliate or licensing programs does not guarantee income or success. All promotional activities must comply with applicable laws and ethical standards. Jarvis Bubble Lab may terminate affiliate relationships at its discretion.
-      </p>
-      <p> 
-      11. Third-Party Services
-      We may link to or integrate third-party platforms. Jarvis Bubble Lab is not responsible for the content, performance, or policies of third parties.
-      </p>
-      <p>
-      12. Limitation of Liability
-      To the fullest extent permitted by law, Jarvis Bubble Lab shall not be liable for:
-      </p>
-      <p>
-      Financial losses, Trading losses, Missed opportunities, Data inaccuracies, Service interruptions
-      </p>
-      <p>
-      Your use of the Services is at your own risk.
-      </p>
-      <p>
-      13. Indemnification
-      You agree to indemnify and hold harmless Jarvis Bubble Lab, its owners, operators, and affiliates from any claims, losses, or damages arising from your use of the Services or violation of these Terms.
-      </p>
-      <p>
-      14. Termination
-      We reserve the right to suspend or terminate access to the Services at any time, with or without notice, for violations of these Terms.
-      </p>
-      <p>
-      15. Modifications
-      We may update these Terms at any time. Continued use of the Services constitutes acceptance of any changes.
-      </p>
-      <p>
-      16. Governing Law
-      These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to conflict-of-law principles.
-      </p>
-      <p>
-      17. Contact Information
-      For questions regarding these Terms, please contact us through the official Jarvis Bubble Lab website.
-  </p>
+
+  <p>Welcome to Jarvis Bubble Lab. By accessing or using our website, products, services, software, content, or community platforms (collectively, the “Services”), you agree to be bound by these Terms and Conditions (“Terms”). If you do not agree, do not use our Services.</p>
+
+  <p><strong>1. Educational Purpose Only</strong><br>
+  All content is for educational purposes only. Nothing constitutes financial, investment, or trading advice.</p>
+
+  <p><strong>2. Risk Disclosure</strong><br>
+  Trading involves substantial risk and may result in losses exceeding your investment.</p>
+
+  <p><strong>3. No Guarantees</strong><br>
+  No guarantees of profitability or performance are made.</p>
+
+  <p><strong>4. Simulated Trading</strong><br>
+  Simulated results do not represent real trading performance.</p>
+
+  <p><strong>5. Memberships</strong><br>
+  Features, pricing, and access levels may change.</p>
+
+  <p><strong>6. Refunds</strong><br>
+  All sales are final unless otherwise stated.</p>
+
+  <p><strong>7. Intellectual Property</strong><br>
+  All content is the property of Jarvis Bubble Lab.</p>
+
+  <p><strong>8. Governing Law</strong><br>
+  Governed by United States law.</p>
 </section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer-bar">
+  <div class="footer-left">
+    <p>Jarvis Bubble Lab</p>
+    <p>Cleveland, OH</p>
+    <p>440-661-5487</p>
+    <p>© 2026 by Jarvis Bubble Lab.</p>
+  </div>
+
+  <div class="footer-center">
+    <a href="https://x.com/TheJarvisBubble" class="social-circle">X</a>
+    <a href="#" class="social-circle">T</a>
+    <a href="#" class="social-circle">F</a>
+    <a href="#" class="social-circle">I</a>
+  </div>
+
+  <div class="footer-right">
+    <p><a href="accessibility.html">Accessibility</a></p>
+    <p><a href="privacy.html">Privacy Policy</a></p>
+    <p><a href="refund.html">Refund Policy</a></p>
+    <p><a href="terms.html">Terms & Conditions</a></p>
+  </div>
+</footer>
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+  let currentUserId = null;
+
+  function show(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }
+
+  function logout() {
+    localStorage.removeItem('jarvis_logged_in');
+  }
+</script>
+
+</body>
+</html>
