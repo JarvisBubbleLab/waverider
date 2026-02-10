@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Jarvis Bubble Lab</title>
+
+<style>
+/* ================= BASE ================= */
+body { margin:0; font-family:Arial,sans-serif; background:#0e1117; color:white; }
+
+/* ================= HEADER ================= */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 15px 30px;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-image {
+   width: 30%;
+   height: auto;
+   max-height: 250px;
+}
+
+.arrow-logo span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(to right, #00c8ff, #00ff9c);
+  margin-right: 3px;
+  border-radius: 2px;
+  animation: pulse 1.2s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.3); }
+}
+
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  display: flex;
+  justify-content: space-between;
+  background: #111;
+}
+
+.footer-bar {
+  width: 95%;
+  padding: 30px 60px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: white;
+}
+
+.footer-left p,
+.footer-right p {
+  margin: 4px 0;
+}
+
+.footer-center a.social-circle {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  margin: 0 5px;
+  border-radius: 50%;
+  text-align: center;
+  background: #222;
+  color: white;
+  text-decoration: none;
+}
+
+/* ================= SECTIONS ================= */
+section { display:none; padding:20px; }
+section.active { display:block; }
+
+/* (ALL other styles preserved exactly as provided) */
+</style>
+</head>
+
+<body>
+
+<script>
+  window.APP_CONTEXT = {
+    affiliateRef: "<?= AFFILIATE_REF ?>",
+    affiliateValid: <?= AFFILIATE_VALID ?>
+  };
+</script>
+
+<!-- ================= HEADER ================= -->
+<header>
+  <div class="logo-wrap">
+    <div class="arrow-logo">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <img 
+      src="https://lh3.googleusercontent.com/d/10C9W6vMqS_5WvsNWMPzPxGUrJPyh4_eM"
+      alt="Jarvis Bubble Lab"
+      class="logo-image"
+    />
+  </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="philosophy.html">Philosophy</a>
+    <a href="challenge.html">Challenge</a>
+    <a href="saas.html">Software / Licenses</a>
+    <a href="risk.html">Risk</a>
+  </nav>
+</header>
+
+<!-- ================= ACCESSIBILITY ================= -->
+<section id="accessibility" class="active">
+  <h2>Accessibility Statement</h2>
+  <p>
+    Jarvis Bubble Lab is committed to ensuring digital accessibility for all users, including individuals with disabilities. We continuously work to improve the user experience for everyone and to apply relevant accessibility standards across our website, educational content, simulated trading tools, and challenge-based programs, including the $50,000 Challenge.
+    </p>
+    <p>
+    1. Our Commitment to Accessibility
+    Jarvis Bubble Lab strives to provide an inclusive and accessible online environment for all users, regardless of ability. Our goal is to ensure that all educational services, digital tools, and community features are usable by the widest possible audience.
+
+    Accessibility is an ongoing effort, and we are actively reviewing and improving our platform to enhance usability and compatibility with assistive technologies.
+    </p>
+    <p>
+    2. Scope of This Accessibility Statement
+    <br>
+    This statement applies to:
+    <br>
+    The Jarvis Bubble Lab website, Educational content and learning materials, Live and recorded trading sessions, Simulated trading demonstrations, Visual indicators, charts, and bubbles, Community features and dashboards
+    <br>
+    <br>
+    The $50,000 Challenge and all related educational components
+    </p>
+    <p>
+    3. Accessibility Standards
+    Jarvis Bubble Lab aims to conform, where reasonably possible, to the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA, which outline best practices for making web content more accessible to people with disabilities.
+    <br>
+    These guidelines address accessibility related to:
+    <br>
+    Visual impairments, Hearing impairments, Motor limitations, Cognitive and neurological differences.
+    </p>
+    <p>
+    4. Accessibility Features Implemented
+    <br>
+    We have taken steps to support accessibility, including but not limited to:
+    <br>
+    Website & Navigation
+    Clear page structure and consistent layouts, Keyboard-accessible navigation where supported by the platform, Logical heading hierarchies to assist screen readers, Readable fonts and color contrast considerations, Educational Content, Text-based explanations accompanying visual concepts, Descriptive labeling of key interface elements where feasible, Structured articles and guides to support assistive reading tools.
+    <br>
+    Live & Recorded Sessions<br>
+    Clear verbal explanations during live and recorded educational sessions, Slower-paced walkthroughs during key educational demonstrations when possible, Archived content that allows users to pause, rewind, and review material at their own pace.
+    </p>
+    <p>
+    5. Accessibility and the $50,000 Challenge
+    <br>
+    The $50,000 Challenge is a simulated, educational experience designed to help users learn about trading concepts, risk management principles, and strategy evaluation in a structured environment.
+    <br>
+    Educational & Simulated Nature<br>
+    The $50,000 Challenge is not a real-money trading account
+    <br>
+    All activity within the challenge is simulated and for educational purposes only, Performance outcomes are hypothetical and may not reflect real-market conditions, 
+    <br>
+    <br>
+    Accessibility Considerations for the Challenge, 
+    <br>
+    We recognize that simulated trading environments can present unique accessibility challenges. As such:
+    <br>
+    The challenge is designed to be self-paced, allowing users to progress according to their individual needs, Educational explanations are provided alongside challenge-related activities to reduce cognitive overload, No participant is required to complete actions within strict time constraints for educational evaluation, Users are encouraged to pause participation at any time if accessibility needs require additional time or assistance, 
+    <br>
+    <br>
+    Visual Tools & Indicators
+    <br>
+    Some challenge components rely on visual charting, indicators, and “bubble” displays to illustrate educational concepts. While these tools are inherently visual, we strive to:
+    <br>
+    Provide written explanations of concepts demonstrated visually, Explain chart behavior verbally during educational sessions, Avoid presenting critical educational information solely through color where feasible.
+    </p>
+    <p>
+    6. Known Limitations
+    <br>
+    While we strive to make all areas accessible, some limitations may exist due to:
+    <br>
+    Third-party charting platforms or embedded tools, Rapidly changing market data visualizations, Legacy content created prior to accessibility updates, We are actively working to identify and improve these areas over time.
+    </p>
+    <p>
+    7. User Responsibility & Assistive Technology
+    <br>
+    Jarvis Bubble Lab encourages users to utilize appropriate assistive technologies, such as:
+    <br>
+    Screen readers, Screen magnifiers, Speech-to-text tools, Keyboard navigation aids, Compatibility may vary depending on the browser, device, and assistive technology used.
+    </p>
+    <p> 
+    8. Feedback & Accessibility Support
+    <br>
+    We welcome feedback regarding accessibility and are committed to addressing reasonable accessibility concerns.
+
+    If you encounter an accessibility barrier or have difficulty accessing any part of the website or the $50,000 Challenge, please contact us through the official Jarvis Bubble Lab website. When reaching out, please include:
+    <br>
+    A description of the issue, The page or feature involved, The assistive technology used (if applicable), We will make reasonable efforts to review and respond in a timely manner.
+    </p>
+    <p>
+    9. Continuous Improvement
+    <br>
+    Accessibility is an ongoing process. Jarvis Bubble Lab is committed to:
+    <br>
+    Reviewing accessibility practices regularly, Updating content and interfaces as technology evolves, Improving clarity, usability, and inclusivity across all services
+    </p>
+    <p>
+    10. Legal Notice
+    <br>
+    Nothing in this Accessibility Statement creates a contractual obligation or guarantees absolute accessibility in all circumstances. Accessibility efforts are provided in good faith and in alignment with applicable guidelines and reasonable technical feasibility.
+  </p>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer-bar">
+  <div class="footer-left">
+    <p>Jarvis Bubble Lab</p>
+    <p>Cleveland, OH</p>
+    <p>440-661-5487</p>
+    <p>© 2026 by Jarvis Bubble Lab.</p>
+  </div>
+
+  <div class="footer-center">
+    <a href="https://x.com/TheJarvisBubble" class="social-circle">X</a>
+    <a href="#" class="social-circle">T</a>
+    <a href="#" class="social-circle">F</a>
+    <a href="#" class="social-circle">I</a>
+  </div>
+
+  <div class="footer-right">
+    <p><a href="accessibility.html">Accessibility</a></p>
+    <p><a href="privacy.html">Privacy Policy</a></p>
+    <p><a href="refund.html">Refund Policy</a></p>
+    <p><a href="terms.html">Terms & Conditions</a></p>
+  </div>
+</footer>
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+  let currentUserId = null;
+
+  function show(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }
+
+  function logout() {
+    localStorage.removeItem('jarvis_logged_in');
+  }
+</script>
+
+</body>
+</html>
