@@ -1,524 +1,554 @@
-<!-- ================= DASHBOARD ================= -->
-<section id="dashboard">
-  <h1>LIVE TRADE DESK</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jarvis Dashboard</title>
 
-  <!-- Logout -->
-  <div style="margin-bottom:15px;">
-    <button class="btn-secondary" onclick="logout()">Logout</button>
-  </div>
-
-  <!-- Status Bubble -->
-  <div class="status-bubble" onclick="toggleStatusPanel()">Account Status</div>
-
-  <!-- ================= ACCOUNT SNAPSHOT + COPY DOTS ================= -->
-  <div class="account-cards">
-
-    <!-- Balance Card -->
-    <div class="card card-small">
-      <h3>Balance</h3>
-      <p id="snapshotBalance">—</p>
-    </div>
-
-    <!-- Visits Card -->
-    <div class="card card-small">
-      <h3>Visits</h3>
-      <p id="snapshotVisits">0</p>
-    </div>
-
-    <!-- Copy Accounts Dots -->
-    <div class="card card-large">
-      <h3>Copy Accounts</h3>
-      <div id="copyStatusDots" class="copy-dots-container"></div>
-    </div>
-
-  </div>
-
-  <style>
-    /* Account Cards Container */
-    .account-cards {
-      display: flex;
-      gap: 8px;
-      width: 97%;
-      margin-bottom: 20px;
-      flex-wrap: nowrap;
-      box-sizing: border-box;
-      overflow-x: hidden;
-    }
-
-    /* Base Card */
-    .card {
-      background: #1c1c1c;
-      color: #fff;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-      min-height: 110px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      flex-shrink: 0;
-      min-width: 0;
-      box-sizing: border-box;
-    }
-
-    .card h3 {
-      margin: 0 0 6px 0;
-      font-size: 16px;
-      color: #00bfff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card p {
-      font-size: 20px;
-      margin: 0;
-      color: #00ff00;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-small {
-      flex: 0 0 calc((97% - 16px) * 0.28);
-    }
-
-    .card-large {
-      flex: 0 0 calc((97% - 16px) * 0.44);
-    }
-
-    /* Copy dots */
-    .copy-dots-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 10px;
-      max-height: 70px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .copy-dots-container::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 40px;
-      height: 20px;
-      background: linear-gradient(to right, transparent, #1c1c1c);
-      pointer-events: none;
-    }
-
-    .copy-dot {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background-color: gray;
-      transition: transform 0.2s;
-      flex-shrink: 0;
-    }
-
-    .copy-dot:hover {
-      transform: scale(1.2);
-    }
-
-    .copy-dot.online   { background-color: #00ff00; }
-    .copy-dot.offline  { background-color: #ff0000; }
-    .copy-dot.disabled { background-color: #000000; }
-    .copy-dot.unknown  { background-color: #ffff00; }
-
-    /* DESK FLEX LAYOUT */
-    .desk {
-      display: flex;
-      gap: 20px;
-      flex-wrap: nowrap;
-      margin-top: 20px;
-    }
-
-    .trade-box {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .calendar-container {
-      background: #1c1c1c;
-      color: #fff;
-      padding: 12px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-      overflow-y: auto;
-    }
-
-    .week {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 4px;
-    }
-
-    .day {
-      background: #333;
-      flex: 1;
-      padding: 6px;
-      border-radius: 6px;
-      font-size: 12px;
-      text-align: center;
-    }
-
-    .day.allowed {
-      background: #008000;  /* green background */
-      color: #000000;       /* black text */
-    }
-
-    .day.locked  { background: #800000; }
-    .clickable-month { cursor: pointer; background: #0044ff; }
-  </style>
-
-  <!-- PASSWORD BOX -->
-  <div id="passwordBox" class="card" style="display:none;">
-    <h3>Welcome to your TRADE DESK - Dashboard. Secure your account before you leave.</h3>
-    <input type="password" id="pw" placeholder="Create password" />
-    <button id="savePwBtn" class="btn-primary" onclick="savePassword()">Save Password</button>
-    <div id="pwStatus" style="display:none; margin-top:12px; color:#7dd3fc; font-size:14px;">
-      Thank you, one moment please…
-    </div>
-  </div>
-
-  <!-- ================= DESK: VIDEO + CALENDAR SIDE BY SIDE ================= -->
 <style>
-  /* DESK FLEX LAYOUT */
-  .desk {
-    display: flex;
-    gap: 8px; /* space between left and right */
-    width: 91%;
-    box-sizing: border-box;
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0f17;
+  color: white;
+}
+
+section {
+  display: none;
+  padding: 30px;
+  min-height: 100vh;
+}
+
+section.active {
+  display: block;
+}
+
+h2, h3 {
+  margin-top: 0;
+}
+
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+input {
+  padding: 10px;
+  margin: 6px 0;
+  width: 100%;
+  border-radius: 6px;
+  border: none;
+}
+
+/* ================= COLORS ================= */
+.long { background: #0f9d58; color: white; }
+.short { background: #db4437; color: white; }
+.close { background: #444; color: white; }
+
+/* ================= CARDS ================= */
+.card {
+  background: #141b26;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* ================= DASHBOARD LAYOUT ================= */
+.dashboard-layout {
+  display: flex;
+  gap: 25px;
+  align-items: flex-start;
+}
+
+/* LEFT SIDE (Video) */
+.video-column {
+  flex: 0 0 65%;
+}
+
+.video-column iframe {
+  width: 100%;
+  height: 520px;
+  border-radius: 14px;
+  border: none;
+}
+
+/* RIGHT SIDE (Trade Panel + Calendar) */
+.side-column {
+  flex: 0 0 35%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Trade Buttons */
+.trade-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.trade-buttons button {
+  flex: 1;
+}
+
+/* ================= CALENDAR ================= */
+.calendar-panel {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #111827;
+  color: #f1f5f9;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.calendar-header h3 {
+  margin: 0;
+  font-size: 1.1em;
+}
+
+.calendar-header #snapshotBalance {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.calendar-panel table.calendar-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.calendar-panel th,
+.calendar-panel td {
+  border: 1px solid #374151;
+  padding: 6px;
+  text-align: right;
+}
+
+.calendar-panel th {
+  background-color: #1f2937;
+}
+
+.calendar-panel td {
+  font-weight: bold;
+}
+
+.calendar-panel td.positive {
+  color: #22c55e; /* green */
+}
+
+.calendar-panel td.negative {
+  color: #ef4444; /* red */
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1000px) {
+  .dashboard-layout {
+    flex-direction: column;
   }
 
-  /* LEFT: Video / Charts / Stream */
-  .desk .trade-box:first-child {
-    flex: 0 0 72%;   /* 72% width */
+  .video-column,
+  .side-column {
+    flex: 100%;
   }
 
-  /* RIGHT: Trade Actions + Calendar */
-  .desk .trade-box:last-child {
-    flex: 0 0 28%;   /* 28% width */
-    display: flex;
-    flex-direction: column; /* stack trade panel + calendar vertically */
-    gap: 8px;
-    max-height: 1650px;
-    overflow-y: auto; /* scroll if content is too tall */
+  .video-column iframe {
+    height: 360px;
   }
-
-  /* Make iframe responsive */
-  .desk .trade-box iframe {
-    width: 98%;
-    height: 650px;
-    border: 0;
-  }
+}
 </style>
 
-<div class="desk">
 
-  <!-- LEFT: Video / Charts / Stream -->
-  <div class="trade-box">
-    <iframe width="100%" height="660"
-            src="https://www.youtube.com/embed/kCmmedYQRFc?autoplay=1&mute=1"
-            frameborder="0" allow="autoplay" allowfullscreen></iframe>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<section id="challenge" class="active">
+  <h2>Welcome to Jarvis</h2>
+  <input type="email" id="emailInput" placeholder="Enter your email">
+  <button onclick="Login.start()">Continue</button>
+</section>
+
+<!-- ================= DASHBOARD ================= -->
+<section id="dashboard">
+
+  <!-- ===== Snapshot Card + Ticker ===== -->
+  <div class="card">
+    <h2>
+      <div class="status-bubble" onclick="toggleStatusPanel()">
+        Dashboard: <span id="snapshotEmail"></span> | 
+        Visits: <span id="snapshotVisits"></span>
+      </div>
+    </h2>
+
+    <!-- ===== Scrolling Market Ticker INSIDE CARD ===== -->
+    <div class="ticker-wrapper" style="margin-top:12px;">
+      <iframe 
+        height="60"
+        style="width:100%; border:none; border-radius:8px;"
+        src="https://s.tradingview.com/embed-widget/ticker-tape/?locale=en#%7B%22symbols%22%3A%5B%7B%22proName%22%3A%22OANDA%3AXAUUSD%22%2C%22title%22%3A%22Gold%22%7D%2C%7B%22proName%22%3A%22OANDA%3AUS30USD%22%2C%22title%22%3A%22US30%22%7D%2C%7B%22proName%22%3A%22BINANCE%3ABTCUSDT%22%2C%22title%22%3A%22BTC%22%7D%5D%2C%22colorTheme%22%3A%22dark%22%7D">
+      </iframe>
+    </div>
   </div>
 
-  <!-- RIGHT: Trade Actions + Calendar -->
-  <div class="trade-box">
+  <!-- ===== Trading Panel ===== -->
+  <div class="dashboard-layout">
 
-    <h2 id="symbol">Your Phantom Trade Panel</h2>
-    <p id="prices">No open trades</p>
-    <div id="openTrades"></div>
-
-    <div id="buttons">
-      <button class="long" onclick="act('LONG')">LONG</button>
-      <button class="short" onclick="act('SHORT')">SHORT</button>
-      <button class="close" onclick="act('CLOSE')">CLOSE</button>
-      <div id="message"></div>
+    <!-- LEFT SIDE: YOUTUBE VIDEO -->
+    <div class="video-column">
+      <iframe 
+        src="https://www.youtube.com/embed/a2-2LygDwv0?si=9w9KOrUnXQJq4aVF" 
+        allowfullscreen>
+      </iframe>
     </div>
 
-    <!-- ================= JARVIS CALENDAR ================= -->
-    <div id="jarvis-calendar" class="calendar-container">
+    <!-- RIGHT SIDE: TRADE PANEL + CALENDAR -->
+    <div class="side-column">
 
-      <h3>
-        <button class="toggle-calendar" onclick="toggleCalendar('my')">
-          Click Here To View Your Trade History
-        </button>
-      </h3>
+      <!-- TRADE PANEL -->
+      <div class="card trade-panel">
+        <h3>Every trade position you make will auto close based on TP and SL that is calculated for you, or you may manually close each position by clicking close.</h3>
 
-      <!-- ================= MAIN JARVIS VIEW ================= -->
-      <div id="jarvis-main-view">
-        <!-- FEBRUARY -->
-        <div class="week">
-          <div class="day">February Jarvis Trades</div>
+        <div id="passwordBox" style="display:none;">
+          <input type="password" id="newPassword" placeholder="Create trading password">
+          <button onclick="Login.setPassword()">Set Password</button>
         </div>
 
-        <div class="week">
-          <div class="day allowed">Monday<br>208.75 pts.</div>
-          <div class="day allowed">Tuesday<br>99.27 pts.</div>
-          <div class="day allowed">Wednesday<br>316 pts.</div>
-          <div class="day">Thursday<br>pts.</div>
-          <div class="day">Friday<br>pts.</div>
+        <div id="openTrades"></div>
+
+        <div class="trade-buttons">
+          <button class="long" onclick="TradeEngine.execute('LONG')">LONG +1 MARKET</button>
+          <button class="short" onclick="TradeEngine.execute('SHORT')">SHORT +1 MARKET</button>
+          <button class="close" onclick="TradeEngine.execute('CLOSE')">CLOSE</button>
         </div>
 
-        <div class="week">
-          <div class="day">Monday<br>pts.</div>
-          <div class="day">Tuesday<br>pts.</div>
-          <div class="day">Wednesday<br>pts.</div>
-          <div class="day">Thursday<br>pts.</div>
-          <div class="day">Friday<br>pts.</div>
-        </div>
-
-        <div class="week">
-          <div class="day">Monday<br>pts.</div>
-          <div class="day">Tuesday<br>pts.</div>
-          <div class="day">Wednesday<br>pts.</div>
-          <div class="day">Thursday<br>pts.</div>
-          <div class="day">Friday<br>pts.</div>
-        </div>
-
-        <div class="week">
-          <div class="day">Monday<br>pts.</div>
-          <div class="day">Tuesday<br>pts.</div>
-          <div class="day">Wednesday<br>pts.</div>
-          <div class="day">Thursday<br>pts.</div>
-          <div class="day">Friday<br>pts.</div>
-        </div>
-
-        <div class="week">
-          <div class="day">Monday<br>pts.</div>
-          <div class="day">Tuesday<br>pts.</div>
-          <div class="day">Wednesday<br>pts.</div>
-          <div class="day">Thursday<br>pts.</div>
-          <div class="day">Friday<br>pts.</div>
-        </div>
-
-        <br>
-        <h3>Jarvis 2026 Monthly Results</h3>
-
-        <div class="week">
-          <!-- CLICKABLE JANUARY TILE -->
-          <div class="day allowed clickable-month" onclick="showJanuary()">
-            January<br>709.53 pts.
-          </div>
-          <div class="day allowed">February<br>704.02 pts.</div>
-          <div class="day">March<br>pts.</div>
-        </div>
-
-        <div class="week">
-          <div class="day">April<br>pts.</div>
-          <div class="day">May<br>pts.</div>
-          <div class="day">June<br>pts.</div>
-        </div>
-
-        <div class="week">
-          <div class="day">July<br>pts.</div>
-          <div class="day">August<br>pts.</div>
-          <div class="day">September<br>pts.</div>
-        </div>
-
-        <div class="week">
-          <div class="day">October<br>pts.</div>
-          <div class="day">November<br>pts.</div>
-          <div class="day">December<br>pts.</div>
-        </div>
-
+        <div id="message" style="margin-top:12px;"></div>
+        <div id="prices"></div>
       </div>
 
-      <!-- ================= JANUARY VIEW ================= -->
-      <div id="january-view" style="display:none;">
-
-        <h3>
-          January Jarvis Results
-          <button class="toggle-calendar" onclick="hideJanuary()">
-            ← Back to Overview
-          </button>
-        </h3>
-
-        <div class="week">
-          <div class="day">Monday<br>pts.</div>
-          <div class="day">Tuesday<br>pts.</div>
-          <div class="day">Wednesday<br>pts.</div>
-          <div class="day">Thursday<br>pts.</div>
-          <div class="day allowed">Friday<br>57.04 pts.</div>
+      <!-- ===== User Daily P/L Calendar (Dynamic) ===== -->
+      <div class="card calendar-panel">
+        <div class="calendar-header">
+          <h3>My Daily P/L Calendar</h3>
+          <div>Balance: $<span id="snapshotBalance">0.00</span></div>
         </div>
-
-        <div class="week">
-          <div class="day">Monday<br>pts.</div>
-          <div class="day allowed">Tuesday<br>107.67 pts.</div>
-          <div class="day allowed">Wednesday<br>80.97 pts.</div>
-          <div class="day">Thursday<br>pts.</div>
-          <div class="day locked">Friday<br>-67.24 pts.</div>
+        
+        <div id="my-calendar">
+          <p>Loading your daily P/L...</p>
         </div>
-
-        <div class="week">
-          <div class="day">Monday<br>pts.</div>
-          <div class="day">Tuesday<br>pts.</div>
-          <div class="day">Wednesday<br>pts.</div>
-          <div class="day">Thursday<br>pts.</div>
-          <div class="day">Friday<br>pts.</div>
-        </div>
-
-        <div class="week">
-          <div class="day">Monday<br>pts.</div>
-          <div class="day">Tuesday<br>pts.</div>
-          <div class="day">Wednesday<br>pts.</div>
-          <div class="day">Thursday<br>pts.</div>
-          <div class="day allowed">Friday<br>79.99 pts.</div>
-        </div>
-
-        <div class="week">
-          <div class="day">Monday<br>pts.</div>
-          <div class="day allowed">Tuesday<br>79.86 pts.</div>
-          <div class="day locked">Wednesday<br>-77.94 pts.</div>
-          <div class="day allowed">Thursday<br>639.45 pts.</div>
-          <div class="day locked">Friday<br>190.26 pts.</div>
-        </div>
-
-      </div>
-
-    </div> <!-- END JARVIS CALENDAR -->
-
-    <!-- ================= MY CALENDAR ================= -->
-    <div id="my-calendar" class="calendar-container" style="display:none;">
-      <h3>
-        My Trade Results & Monthly Data
-        <button class="toggle-calendar" onclick="toggleCalendar('jarvis')">
-          Click Here To View Jarvis Trade Results
-        </button>
-      </h3>
-    </div>
-
-  </div> <!-- END RIGHT TRADE BOX -->
-
-</div> <!-- END DESK -->
-
-
-  <!-- ================= STATUS PANEL ================= -->
-  <div id="status-panel">
-    <h2>Account Status & Operating Scope</h2>
-    <div class="status-grid">
-
-      <div class="status-card">
-        <h4>Membership</h4>
-        <p class="allowed"><strong>Email: </strong> <span id="snapshotEmail">—</span></p>
-        <p class="allowed"><strong>✔ Tier: </strong>LEARN_JARVIS</p>
-      </div>
-
-      <div class="status-card">
-        <h4>Current Permissions</h4>
-        <p class="allowed">✔ Personal Tradedesk</p>
-        <p class="allowed">✔ Learn Jarvis Executions</p>
-      </div>
-
-      <div class="status-card">
-        <h4>Unlockable Paths</h4>
-        <p class="allowed">✔ Affiliate Marketing</p>
-        <p class="allowed">✔ Copy Trader</p>
-      </div>
-
-      <div class="status-card">
-        <h4>System Levels</h4>
-        <p class="allowed">✔ Ledger Copy Trading (Active)</p>
-        <p class="locked">X License Upgrade (Maintenance Mode)</p>
-        <p class="locked">X Build Futures AI License (Maintenance Mode)</p>
       </div>
 
     </div>
   </div>
 
-  <!-- ================= QUICK LINKS ================= -->
-  <div style="display:flex; justify-content:center; gap:60px; margin-top:50px;">
+
+  
+    <div style="display:flex; justify-content:center; gap:60px; margin-top:50px;">
     <div style="text-align:center;">
-      <a href="#" onclick="openAffiliateSection()" style="color:#4da3ff; font-weight:bold; text-decoration:none;">
+      <a href="affiliate.html"
+        style="color:#4da3ff; font-weight:bold; text-decoration:none;">
         Affiliate Lab →
       </a>
     </div>
 
     <div style="text-align:center;">
-      <a href="#" onclick="openCopyTradeSection()" style="color:#4da3ff; font-weight:bold; text-decoration:none;">
+      <a href="copytrader.html"
+        style="color:#4da3ff; font-weight:bold; text-decoration:none;">
         Copy Trader →
-      </a>
+      </a>    
     </div>
   </div>
-
-  <script>
-    // OPEN TRADES RENDER
-    function renderOpenTrades(userId) {
-      google.script.run.withSuccessHandler(renderTradesOnPage).getOpenTrades(userId);
-    }
-
-    function renderTradesOnPage(trades) {
-      const container = document.getElementById('openTradeContainer');
-      container.innerHTML = '';
-      if (trades.length === 0) { container.innerHTML = '<p>No open trades</p>'; return; }
-      trades.forEach(trade => {
-        const tradeEl = document.createElement('div');
-        tradeEl.className = 'trade-card';
-        tradeEl.innerHTML = `<strong>${trade.Type}</strong> | Entry: ${trade.Entry} | SL: ${trade.SL} | TP: ${trade.TP}`;
-        container.appendChild(tradeEl);
-      });
-    }
-
-    setInterval(() => { renderOpenTrades(currentUserId); }, 60000);
-
-    function openAffiliateSection() {
-      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-      document.getElementById("affiliateSection").style.display = "block";
-      loadAffiliateStatus();
-    }
-
-    function openCopyTradeSection() {
-      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-      document.getElementById("copytradeSection").style.display = "block";
-      loadCopyTradeStatus();
-    }
-
-    function loadCopyStatusDots() {
-      const container = document.getElementById('copyStatusDots');
-      if (!container) return;
-      container.innerHTML = '';
-      google.script.run.withSuccessHandler(res => {
-        if (!res || !res.success || !res.accounts) return;
-        res.accounts.forEach(acc => {
-          const dot = document.createElement('div');
-          const color = determineDotColor(acc);
-          dot.className = `copy-dot ${color}`;
-          dot.innerHTML = `<div class="copy-tooltip">
-            <strong>${acc.accountName}</strong><br>
-            Platform: ${acc.platform}<br>
-            Type: ${acc.accountType}<br>
-            Status: ${acc.status}<br>
-            Enabled: ${acc.enabled ? 'Yes' : 'No'}<br>
-            Last Seen: ${formatLastSeen(acc.lastSeen)}
-          </div>`;
-          container.appendChild(dot);
-        });
-      }).getCopyAccounts();
-    }
-
-    function determineDotColor(acc) {
-      if (!acc.enabled) return 'grey';
-      if (acc.status !== 'Connected') return 'red';
-      if (acc.lastSeen) {
-        const diffMin = (Date.now() - new Date(acc.lastSeen)) / 60000;
-        if (diffMin > 5) return 'yellow';
-      }
-      return 'green';
-    }
-
-    function formatLastSeen(ts) {
-      if (!ts) return 'Never';
-      const diff = Math.floor((Date.now() - new Date(ts)) / 60000);
-      if (diff < 1) return 'Just now';
-      if (diff < 60) return `${diff} min ago`;
-      return `${Math.floor(diff / 60)} hr ago`;
-    }
-  </script>
 </section>
+
+<!-- ================= AFFILIATE ================= -->
+<section id="affiliateSection">
+  <h2>Affiliate Program</h2>
+
+  <div class="card">
+    <div>Your Referral Link:</div>
+    <div id="refLink"></div>
+  </div>
+
+  <button onclick="Sections.show('dashboard')">Back</button>
+</section>
+
+
+<script>
+
+// ================= TRADES =================
+
+function updateButtons() {
+  document.querySelector('.long').disabled = tradeState.active;
+  document.querySelector('.short').disabled = tradeState.active;
+  document.querySelector('.close').disabled = !tradeState.active;
+}
+
+// ================= GLOBAL STATE =================
+const AppState = {
+  currentUser: null,
+  trade: {
+    active: false,
+    tradeId: null,
+    entry: null,
+    side: null
+  }
+};
+
+// ================= SECTION CONTROLLER =================
+const Sections = {
+  show(id) {
+    document.querySelectorAll('section')
+      .forEach(s => s.classList.remove('active'));
+
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }
+};
+
+// ================= UI HELPERS =================
+const UI = {
+
+  setMessage(msg) {
+    const el = document.getElementById('message');
+    if (el) el.innerText = msg;
+  },
+
+  setPrices(text) {
+    const el = document.getElementById('prices');
+    if (el) el.innerText = text;
+  },
+
+  setBalance(val) {
+    const el = document.getElementById('snapshotBalance');
+    if (el) el.innerText = Number(val).toFixed(2);
+  },
+
+  showTradeBlocked() {
+    const el = document.getElementById('openTrades');
+    if (!el) return;
+
+    el.innerHTML = `
+      <div class="trade-locked">
+        🔒 Trading Locked<br>
+        Create a password to enable trading.
+      </div>
+    `;
+  }
+};
+
+// ================= AUTH =================
+const Auth = {
+
+  canTrade() {
+    return localStorage.getItem('jarvis_has_password') === '1';
+  },
+
+  setPasswordStatus(user) {
+    localStorage.setItem(
+      'jarvis_has_password',
+      user.Password ? '1' : '0'
+    );
+  }
+};
+
+// ================= LOGIN =================
+const Login = {
+
+  start() {
+    const email = document.getElementById('emailInput').value;
+    if (!email) return alert("Enter email");
+
+    localStorage.setItem('jarvis_email', email);
+    localStorage.setItem('jarvis_logged_in', '1');
+
+    google.script.run
+      .withSuccessHandler(user => {
+        if (!user) return;
+        AppState.currentUser = user;
+        Auth.setPasswordStatus(user);
+        Dashboard.load(user);
+        Sections.show('dashboard');
+      })
+      .getOrCreateUser(email, getVisitorId());
+  },
+
+  setPassword() {
+    const pwd = document.getElementById('newPassword').value;
+    if (!pwd) return alert("Enter password");
+
+    google.script.run
+      .withSuccessHandler(() => {
+        localStorage.setItem('jarvis_has_password', '1');
+        document.getElementById('passwordBox').style.display = 'none';
+        document.getElementById('openTrades').innerHTML = '';
+      })
+      .setUserPassword(AppState.currentUser.UserID, pwd);
+  }
+};
+
+// ================= TRADE ENGINE =================
+const TradeEngine = {
+
+  updateButtons() {
+    document.querySelector('.long').disabled = AppState.trade.active;
+    document.querySelector('.short').disabled = AppState.trade.active;
+    document.querySelector('.close').disabled = !AppState.trade.active;
+  },
+
+  execute(action) {
+
+    if (!Auth.canTrade()) {
+      UI.showTradeBlocked();
+      return;
+    }
+
+    UI.setMessage("Processing...");
+
+    google.script.run
+      .withSuccessHandler(res => {
+
+        UI.setMessage(res.message);
+
+        if (res.state === 'OPEN') {
+          Object.assign(AppState.trade, {
+            active: true,
+            tradeId: res.tradeId,
+            entry: res.entry,
+            side: res.side
+          });
+
+          UI.setPrices(`Entry: ${res.entry} | SL: ${res.sl} | TP: ${res.tp}`);
+        }
+
+        if (res.state === 'CLOSED') {
+          AppState.trade = { active:false, tradeId:null, entry:null, side:null };
+
+          UI.setPrices(
+            `Closed @ ${Number(res.exit).toFixed(2)} | P/L: $${Number(res.pl).toFixed(2)}`
+          );
+
+          if (res.balance !== undefined)
+            UI.setBalance(res.balance);
+        }
+
+        this.updateButtons();
+      })
+      .withFailureHandler(err => UI.setMessage(err.message))
+      .handleTradeAction({
+        action,
+        userId: AppState.currentUser.UserID,
+        tradeId: AppState.trade.tradeId
+      });
+  }
+};
+
+// ================= DASHBOARD =================
+const Dashboard = {
+
+  load(user) {
+
+    AppState.currentUser = user;
+
+    document.getElementById('snapshotEmail').innerText = user.Email || 'Guest';
+    document.getElementById('snapshotVisits').innerText = user.Visits || '0';
+
+    if (!user.Password) {
+      document.getElementById('passwordBox').style.display = 'block';
+      UI.showTradeBlocked();
+    }
+
+    google.script.run
+      .withSuccessHandler(balance => UI.setBalance(balance))
+      .getUserTodayBalance(user.UserID);
+
+    document.getElementById('refLink').innerText =
+      window.location.origin + "?ref=" + user.UserID;
+  }
+};
+
+// ================= UTIL =================
+function getVisitorId() {
+  let id = localStorage.getItem('jarvis_visitor_id');
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem('jarvis_visitor_id', id);
+  }
+  return id;
+}
+
+// ================= CALENDAR =================
+// Called after loadDashboard
+// ================= AUTO BOOT =================
+window.addEventListener('load', () => {
+
+  const email = localStorage.getItem('jarvis_email');
+  const loggedIn = localStorage.getItem('jarvis_logged_in') === '1';
+
+  if (!email || !loggedIn) return;
+
+  google.script.run
+    .withSuccessHandler(user => {
+      if (!user) return;
+
+      AppState.currentUser = user;
+      Auth.setPasswordStatus(user);
+
+      // Load dashboard snapshot
+      Dashboard.load(user);
+
+      // Load calendar dynamically
+      loadCalendar(user.UserID || user.email);
+
+      Sections.show('dashboard');
+    })
+    .getOrCreateUser(email, getVisitorId());
+});
+
+// ================= CALENDAR LOADER =================
+function loadCalendar(userId) {
+  const container = document.getElementById('my-calendar');
+  container.innerHTML = '<p>Loading your daily P/L...</p>';
+
+  const POINT_VALUE = 5; // MNQ $ per point
+  const todayDate = new Date().getDate(); // 1–31
+
+  google.script.run.withSuccessHandler(calendarData => {
+    if (!calendarData || Object.keys(calendarData).length === 0) {
+      container.innerHTML = '<p>No calendar data found.</p>';
+      return;
+    }
+
+    let html = '<table class="calendar-table">';
+    html += '<tr><th>Day</th><th>Points</th><th>$ Value</th></tr>';
+
+    Object.keys(calendarData).sort((a,b) => a-b).forEach(day => {
+      const trades = calendarData[day];
+      const pts = trades.reduce((sum, p) => sum + p, 0); // sum all trades per day
+      const dollarValue = pts * POINT_VALUE;
+
+      let color = pts >= 0 ? '#22c55e' : '#ef4444';
+      if (Number(day) === todayDate) color = '#3b82f6'; // highlight today
+
+      html += `<tr>
+        <td>${day}</td>
+        <td style="color:${color}">${pts.toFixed(2)} pts</td>
+        <td style="color:${color}">$${dollarValue.toFixed(2)}</td>
+      </tr>`;
+    });
+
+    html += '</table>';
+    container.innerHTML = html;
+
+  }).getUserCalendar(userId);
+}
+
+</script>
+</body>
+</html>
