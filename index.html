@@ -96,29 +96,30 @@
 
 <!-- ============ JS (INDEX ONLY) ============ -->
 <script>
-function loadTestimonials() {
-  google.script.run.withSuccessHandler(data => {
-    const grid = document.getElementById('testimonial-grid');
-    grid.innerHTML = '';
+// function loadTestimonials() {
+//  google.script.run.withSuccessHandler(data => {
+//    const grid = document.getElementById('testimonial-grid');
+//    grid.innerHTML = '';
 
-    if (!data || !data.length) {
-      grid.innerHTML = '<p>Testimonials coming soon.</p>';
-      return;
-    }
+//    if (!data || !data.length) {
+//      grid.innerHTML = '<p>Testimonials coming soon.</p>';
+//      return;
+//    }
 
-    data.forEach(t => {
-      const div = document.createElement('div');
-      div.className = 'testimonial-item';
-      div.innerHTML = `<p>${t.Testimonial}</p><strong>— ${t.DisplayName}</strong>`;
-      grid.appendChild(div);
-    });
-  }).getTestimonials();
-}
+//    data.forEach(t => {
+//      const div = document.createElement('div');
+//      div.className = 'testimonial-item';
+//      div.innerHTML = `<p>${t.Testimonial}</p><strong>— ${t.DisplayName}</strong>`;
+//      grid.appendChild(div);
+//    });
+//  }).getTestimonials();
+// }
 
 // window.addEventListener('load', loadTestimonials);
 </script>
 
 </body>
 </html>
+
 
 
