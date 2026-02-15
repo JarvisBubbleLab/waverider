@@ -278,3 +278,24 @@ td {
     margin-right: 0;
   }
 
+    .saas-image .tooltip-text {
+      display: none;
+      position: absolute;
+      top: 100%; /* below the image */
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      width: 300px;
+      font-size: 13px;
+      line-height: 1.5;
+      z-index: 100;
+      white-space: normal;
+      text-align: left;
+    }
+
+    .saas-image:hover .tooltip-text {
+      display: block;
+    }
