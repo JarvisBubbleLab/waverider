@@ -1,0 +1,2633 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Jarvis Bubble Lab</title>
+
+<style>
+/* ================= BASE ================= */
+body { margin:0; font-family:Arial,sans-serif; background:#0e1117; color:white; }
+/* header, footer { display:flex; justify-content:space-between; padding:5px; background:#111; } 
+nav a { margin:0 10px; cursor:pointer; }*/
+/* ================= HEADER ================= */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111;
+  padding: 15px 30px; /* overrides the generic 5px cleanly */
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo-image {
+   width: 30%;
+   height: auto;
+   max-height: 250px;
+}
+
+.arrow-logo span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(to right, #00c8ff, #00ff9c);
+  margin-right: 3px;
+  border-radius: 2px;
+  animation: pulse 1.2s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+nav a {
+  margin-left: 20px;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  display: flex;
+  justify-content: space-between;
+  background: #111;
+}
+
+.footer-bar {
+  width: 95%;
+  padding: 30px 60px; /* supersedes generic padding */
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  color: white;
+}
+
+.footer-left p,
+.footer-right p {
+  margin: 4px 0;
+  cursor: pointer;
+}
+
+.footer-center a.social-circle {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  margin: 0 5px;
+  border-radius: 50%;
+  text-align: center;
+  background: #222;
+  color: white;
+  text-decoration: none;
+}
+
+section { display:none; padding:20px; }
+section.active { display:block; }
+.card { background:#11151c; padding:5px; border-radius:5px; margin-top:5px; }
+.btn-primary { background:#00ff9c; border:none; padding:10px 16px; cursor:pointer; color:#000; font-weight:bold; }
+input { padding:5px; width:100%; margin-top:5px; border-radius:6px; border:none; }
+
+/* ================= HOME STYLES ================= */
+.home-grid { display:flex; flex-wrap:wrap; gap:40px; }
+.home-col { flex:1; min-width:300px; }
+.home-item img { width:100%; border-radius:12px; box-shadow:0 0 20px rgba(0,200,255,0.2); }
+.home-text h2 { margin:15px 0 10px; color:#00c8ff; }
+.home-text p { color:#ccc; line-height:1.6; }
+.video-section iframe { width:100%; height:480px; border:none; border-radius:12px; box-shadow:0 0 25px rgba(0,200,255,0.15); }
+/* ================= SHARED FEATURE IMAGE ================= */
+.feature-image { width:100%; border-radius:12px; box-shadow:0 0 20px rgba(0,200,255,0.2); }
+/* ================= TESTIMONIALS ================= */
+.testimonial-section { margin-top:60px; }
+.testimonial-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; }
+.testimonial-item { background:#111; padding:20px; border-radius:12px; box-shadow:0 0 15px rgba(0,200,255,0.1); }
+
+/* ================= DASHBOARD ================= */
+.account-cards { display:flex; gap:16px; flex-wrap:wrap; margin-top:20px; }
+.account-cards .card { flex:0 0 33.333%; max-width:33.333%; text-align:center; }
+.desk { display:flex; gap:20px; flex-wrap:wrap; margin-top:20px; }
+.trade-box { flex:1; min-width:300px; }
+
+.footer-bar { display:flex; justify-content:space-between; padding:15px; background:#111; margin-top:40px; }
+.footer-bar a { color:white; text-decoration:none; margin:0 5px; }
+/* ================= DASHBOARD FULLSCREEN MODE ================= */
+body.dashboard-mode header,
+body.dashboard-mode .footer-bar { display:none !important; }
+
+/* ================= DASHBOARD DESK ================= */
+.desk { display:grid; grid-template-columns:70% 30%; gap:20px; margin-top:30px; }
+.trade-box { border:1px solid #222; padding:20px; background:#0b0d12; }
+
+.long { background:#00c853; color:#000; }
+.short { background:#d32f2f; color:#000; }
+.close { background:#93712c; color:#000; }
+
+#message { color:gold; font-weight:bold; margin-top:10px; }
+
+/* ================= STATUS BUBBLE ================= */
+.status-bubble {
+  position:fixed; top:20px; right:20px;
+  background:radial-gradient(circle at top left,#00c8ff,#0077ff);
+  color:#000; padding:14px 18px; border-radius:30px; font-weight:bold; cursor:pointer;
+  box-shadow:0 0 20px rgba(0,200,255,0.35); z-index:1000;
+}
+
+/* ================= STATUS PANEL ================= */
+#status-panel {
+  max-height:0; overflow:hidden; transition:max-height 0.5s ease; margin-top:30px;
+  border:1px solid #222; background:#0b0d12; padding:0 20px;
+}
+#status-panel.open { max-height:600px; padding:20px; }
+.status-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
+.status-card { background:#11151c; border:1px solid #222; padding:16px; border-radius:10px; }
+.allowed { color:#00c853; }
+.locked { color:#ff5252; }
+
+/* ================= CHALLENGE ================= */
+.challenge-flow {
+  max-width:420px;
+  margin:40px auto;
+  padding:20px;
+  background:#0b0f1a;
+  border:1px solid #1f2a44;
+  border-radius:14px;
+}
+.challenge-flow h3 { color:#00ff9c; margin-top:0; }
+.challenge-flow p { color:#ccc; font-size:14px; }
+
+/* TABLE WRAPPER – creates left/right space */
+.table-wrap {
+  padding: 0 12px;      /* ← THIS is the stretch */
+}
+
+/* ================= SAAS TABLE ================= */
+/* TABLE FULL WIDTH */
+.funnel-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* ensures even column spread */
+}
+
+/* CELL PADDING – makes it feel wide */
+.funnel-table th,
+.funnel-table td {
+  padding: 12px 14px;   /* ← horizontal space */
+  border-bottom: 1px solid #222;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+/* HEADER POLISH */
+.funnel-table th {
+  color: #00ff9c;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ================ AFFILIATES ================*/
+.kpi-row {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+  gap:16px;
+  margin-top:30px;
+}
+
+.kpi {
+  background:#111827;
+  border-radius:10px;
+  padding:16px;
+  text-align:center;
+  font-weight:600;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.kpi span {
+  font-size:22px;
+  display:block;
+  margin-top:6px;
+}
+
+.kpi.frozen { color:#facc15; }
+.kpi.payable { color:#4ade80; }
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:16px;
+}
+
+th {
+  background:#0f172a;
+  padding:10px;
+  font-size:13px;
+  text-align:left;
+}
+
+td {
+  padding:10px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  font-size:13px;
+}
+
+/* ================== Logout Landing Page ================ */
+@media (max-width: 768px) {
+  .login-bottom {
+    flex-direction: column;
+  }
+}
+
+/* ================== Calendar ================ */
+  .calendar-container {
+    font-family: Arial, sans-serif;
+    color: white;
+    max-width: 800px;
+    margin: auto;
+  }
+
+  h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 300; /* lighter header */
+    font-size: 15px;
+  }
+
+  .week {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px; /* space between weeks */
+  }
+
+  .day {
+    flex: 1;
+    border: 1px solid #555;
+    padding: 6px;
+    text-align: center;
+    margin-right: 5px;
+    background: #1c1f2a;
+    border-radius: 4px;
+    font-weight: 300;  /* lighter font */
+    font-size: 12px;   /* smaller font */
+  }
+
+  .day:last-child {
+    margin-right: 0;
+  }
+
+</style>
+</head>
+
+<body>
+<script>
+  window.APP_CONTEXT = {
+    affiliateRef: "<?= AFFILIATE_REF ?>",
+    affiliateValid: <?= AFFILIATE_VALID ?>
+  };
+</script>
+
+<header>
+  <div class="logo-wrap">
+    <div class="arrow-logo">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <img 
+      src="https://lh3.googleusercontent.com/d/10C9W6vMqS_5WvsNWMPzPxGUrJPyh4_eM"
+      alt="Jarvis Bubble Lab"
+      class="logo-image"
+    />
+  </div>
+
+  <nav>
+    <a onclick="show('home')">Home</a>
+    <a onclick="show('philosophy')">Philosophy</a>
+    <a onclick="show('challenge')">Challenge</a>
+    <a onclick="show('saas')">Software / Licenses</a>
+    <a onclick="show('risk')">Risk</a>
+  </nav>
+</header>
+
+<!-- ================= HOME ================= -->
+<section id="home" class="active">
+  <div class="home-grid" style="margin-top:60px;">
+    <div class="home-col">
+      <div class="home-item">
+        <img src="https://lh3.googleusercontent.com/d/1WiEnT0w4LigFU5naOCo5pIDRxLTfPe9t">
+        <div class="home-text">
+          <h2>Learn and Execute (Simulated)</h2>
+          <p>Experience structured futures trading education with Jarvis Bubbles. Complete our challenge to license Jarvis software. Watch NQ daily sessions and practice your own executions.</p>
+        </div>
+      </div>
+    </div>
+    <div class="home-col">
+      <div class="home-item">
+        <img src="https://lh3.googleusercontent.com/d/1u9G3PTFQjBN33ux3vq1HqGxqwiyKG1sC">
+        <div class="home-text">
+          <h2>Train With Purpose</h2>
+          <p>Learn how Jarvis places simulated trades using its proprietary strategy. Build discipline, confidence, and mastery before licensing Jarvis for your own trading.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="video-section" style="margin-top:60px;">
+    <iframe src="https://www.youtube.com/embed/a2-2LygDwv0?si=9w9KOrUnXQJq4aVF" allowfullscreen></iframe>
+  </div>
+
+  <div class="testimonial-section">
+    <h2>What Traders Are Saying</h2>
+    <div id="testimonial-grid" class="testimonial-grid">
+      <p>Loading testimonials…</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PHILOSOPHY ================= -->
+<section id="philosophy">
+  <div
+    style="
+      display:flex;
+      align-items:flex-start;
+      gap:40px;
+      flex-wrap:nowrap;
+    "
+  >
+    
+    <img
+      src="https://lh3.googleusercontent.com/d/10zvbVKqFcYdW4HqjCPdH9KiCuV7OuiI7"
+      style="
+        max-width:400px;
+        width:100%;
+        border-radius:8px;
+        flex-shrink:0;
+      "
+    />
+
+    <div style="flex:1;">
+      <h2>Who We Are</h2>
+
+      <p>
+        Jarvis Bubble Lab is committed to empowering traders through live education and resources for trading futures, specifically Nasdaq, NQ, and MNQ.
+      </p>
+
+      <p>
+        <strong>Our Offerings</strong><br>
+        We provide a unique educational software product called Jarvis, designed to help users learn and practice futures trading concepts in a simulated environment. When you become a site member, you’re granted access to an interactive dashboard.
+      </p>
+
+      <p>
+        As Jarvis analyzes the market and generates phantom (hypothetical) trades, you practice execution by recording simulated actions inside your dashboard. Jarvis sends educational notifications that temporarily unlock simulated enter and exit buttons for training purposes only.
+      </p>
+
+      <p>
+        You’ll have five seconds to respond before the system closes the simulated opportunity. This mechanic is intentionally designed to reinforce focus, timing, and execution discipline.
+      </p>
+
+      <p>
+        The result of every simulated trade you take is recorded in your phantom ledger balance, which is used solely for educational tracking.
+        Jarvis emphasizes eyes on the charts and hands-on execution discipline, helping users build consistency, awareness, and confidence.
+      </p>
+
+      <p>
+        Additionally, Jarvis displays BUBBLES on the chart to visually represent simulated profit targets and stop-loss levels used by the software. These visuals are not trade recommendations and are provided solely to enhance learning and clarity.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ================= $50K CHALLENGE / MEMBER LOGIN ================= -->
+<section id="challenge">
+  <div style="display:flex; flex-wrap:wrap; gap:20px; align-items:stretch;">
+
+    <!-- IMAGE -->
+    <div style="flex:1; min-width:250px; display:flex; align-items:center; justify-content:center;">
+      <img class="feature-image"
+           src="https://lh3.googleusercontent.com/d/1seRRIbVaN9e4fE-QhX73aBPrj0SNCqVf"
+           style="width:110%; height:100%; object-fit:contain;"/>
+    </div>
+
+    <!-- INFO + CTA -->
+    <div style="flex:0.9; min-width:250px; border:1px solid #222; padding:20px; border-radius:12px; background:#11151c;">
+      <h2>Get To Know Jarvis Before You Purchase A License</h2>
+      <p style="color:gold; font-weight:bold;">
+        Free for 30 days • $5/month afterward • Cancel anytime
+      </p>
+
+      <!-- INLINE FLOW -->
+      <div id="challengeFlow" class="challenge-flow">
+
+        <!-- MEMBER LOGIN -->
+        <div id="challengeStepLogin" style="display:none;">
+          <h3>Welcome Back</h3>
+          <input id="memberEmail" placeholder="Email" />
+          <input id="memberPassword" type="password" placeholder="Password" />
+          <button class="btn-primary" onclick="submitMemberPassword()">Login</button>
+          <p id="loginLoading" style="display:none;">Verifying…</p>
+          <p id="loginError" style="display:none; color:#ff6b6b;"></p>
+        </div>
+
+        <!-- EMAIL -->
+        <div id="challengeStepEmail">
+          <h3>Start Your Demo</h3>
+          <input id="challengeEmail" placeholder="you@example.com" />
+          <button class="btn-primary" onclick="submitChallengeEmail()">Activate</button>
+          <p id="challengeLoading" style="display:none;">Setting up…</p>
+        </div>
+
+        <!-- CONFIRM -->
+        <div id="challengeStepConfirm" style="display:none;">
+          <h3>Welcome 🎉</h3>
+          <p>Come on in, join the fun!</p>
+          <button class="btn-primary" onclick="enterDashboardFromChallenge()">Enter Your Dashboard</button>
+        </div>
+
+      </div>
+
+      <div style="margin-top:30px; color:#ccc;">
+        <p>Learn all about Jarvis, Watch actual simulated trading, copy the trades to track Jarvis software results.</p>
+      <br><br>
+      Key Characteristics:<br>
+      ✅ Your trades are simulated / ledger-based<br>
+      ✅ No brokerage connection required as you test Jarvis<br>
+      ✅ Latency does not matter during this phase<br>
+      ✅ Track Jarvis performance for yourself<br>
+      ✅ All activity is recorded as a learning ledger<br>
+      ✅ NOT direct execution or financial advice<br>
+      <br><br>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREE-COLUMN INFORMATION ROW -->
+  <div style="display:flex; flex-wrap:wrap; gap:20px; margin-top:30px;">
+    <!-- WHO THIS IS FOR -->
+    <div style="flex:1; min-width:250px; border:1px solid #222; padding:20px; border-radius:12px; background:#11151c;">
+      <h3>Who This Is For</h3>
+      <p>Users who want automation:</p>
+      <ul style="color:#ccc;">
+        <li>Trade Futures NQ, MNQ, ES, MES</li>
+        <li>Want to experience Jarvis here first</li>
+      </ul>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div style="flex:1; min-width:250px; border:1px solid #222; padding:20px; border-radius:12px; background:#11151c;">
+      <h3>How It Works</h3>
+      <p>Provide an email and get back office trade desk:</p>
+      <ul style="color:#ccc;">
+        <li>Watch daily live feeds of Jarvis at work</li>
+        <li>Observe Jarvis entering phantom trades in a live market</li>
+        <li>Copy trade each trade in a non money ledger to keep track</li>
+      </ul>
+    </div>
+
+    <!-- CONVERSION POINT -->
+    <div style="flex:1; min-width:250px; border:1px solid #222; padding:20px; border-radius:12px; background:#11151c;">
+      <h3>License Software</h3>
+      <p>No time frame:</p>
+      <ul style="color:#ccc;">
+        <li>When you are comfortable with Jarvis, take the next step</li>
+        <li>Get 3 day trial for live account at NinjaTrader</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DASHBOARD ================= -->
+<section id="dashboard">
+  <h1>LIVE TRADE DESK</h1>
+
+  <!-- Logout -->
+  <div style="margin-bottom:15px;">
+    <button class="btn-secondary" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Status Bubble -->
+  <div class="status-bubble" onclick="toggleStatusPanel()">Account Status</div>
+
+  <!-- ===== Snapshot Card + Ticker ===== -->
+  <div class="card">
+    <h2>
+      <div class="status-bubble" onclick="toggleStatusPanel()">
+        Dashboard: <span id="snapshotEmail"></span> | 
+        Visits: <span id="snapshotVisits"></span>
+      </div>
+    </h2>
+
+    <!-- ===== Scrolling Market Ticker INSIDE CARD ===== -->
+    <div class="ticker-wrapper" style="margin-top:12px;">
+      <iframe 
+        height="60"
+        style="width:100%; border:none; border-radius:8px;"
+        src="https://s.tradingview.com/embed-widget/ticker-tape/?locale=en#%7B%22symbols%22%3A%5B%7B%22proName%22%3A%22OANDA%3AXAUUSD%22%2C%22title%22%3A%22Gold%22%7D%2C%7B%22proName%22%3A%22OANDA%3AUS30USD%22%2C%22title%22%3A%22US30%22%7D%2C%7B%22proName%22%3A%22BINANCE%3ABTCUSDT%22%2C%22title%22%3A%22BTC%22%7D%5D%2C%22colorTheme%22%3A%22dark%22%7D">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- ================= STYLES ================= -->
+  <style>
+    /* Account Cards Container */
+    .account-cards {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    /* Individual Cards */
+    .card {
+      background: #1c1c1c;
+      color: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      min-width: 150px;
+      flex: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #00bfff;
+    }
+
+    .card p {
+      font-size: 20px;
+      margin: 5px 0 0 0;
+      color: #00ff00;
+    }
+
+    /* Copy Dots Container */
+    .copy-dots-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-width: 220px; /* 10 dots x ~22px */
+      min-height: 60px;
+      margin-top: 10px;
+    }
+
+    /* Individual Dots */
+    .copy-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: gray; /* default unknown */
+      transition: transform 0.2s;
+    }
+
+    .copy-dot:hover {
+      transform: scale(1.2);
+    }
+
+    .copy-dot.online { background-color: #00ff00; }   /* green */
+    .copy-dot.offline { background-color: #ff0000; }  /* red */
+    .copy-dot.disabled { background-color: #000000; } /* black */
+    .copy-dot.unknown { background-color: #ffff00; }  /* yellow */
+  </style>
+
+  <!-- PASSWORD BOX FOR MEMBER -->
+  <div id="passwordBox" class="card" style="display:none;">
+    <h3>Welcome to your TRADE DESK - Dashboard. Secure your account before you leave.</h3>
+    <input type="password" id="pw" placeholder="Create password" />
+    <button id="savePwBtn" class="btn-primary" onclick="savePassword()">Save Password</button>
+    <div id="pwStatus" style="display:none; margin-top:12px; color:#7dd3fc; font-size:14px;">
+      Thank you, one moment please…
+    </div>
+  </div>
+
+  <!-- DESK -->
+  <div class="desk">
+    <!-- LEFT: Video / Charts / Stream -->
+    <div class="trade-box">
+      <iframe width="100%" height="650"
+              src="https://www.youtube.com/embed/kCmmedYQRFc?autoplay=1&mute=1"       
+              frameborder="0" allow="autoplay" allowfullscreen></iframe>
+    </div>
+
+    <!-- RIGHT: Trade Actions -->
+    <div class="trade-box">
+    <h2 id="symbol">Your Phantom Trade Panel</h2>
+    <p id="strategy">Strategy details here</p>
+
+    <!-- Prices/SL/TP -->
+   <p id="prices">No open trades</p>
+    <div id="openTrades"></div>
+
+
+    <!-- Open Trades Dynamic Container 
+    <div id="openTradeContainer">
+      
+    </div> -->
+
+      <div id="buttons">
+        <button class="long" onclick="act('LONG')">LONG</button>
+        <button class="short" onclick="act('SHORT')">SHORT</button>
+        <button class="close" onclick="act('CLOSE')">CLOSE</button>
+              <div id="message"></div>
+      </div>
+
+
+
+    <div id="my-calendar" class="calendar-container" style="display:none;">
+      <h3>My Trade Results & Monthly Data
+        <button class="toggle-calendar" onclick="toggleCalendar('jarvis')">
+          Click Here To View Jarvis Trade Results
+        </button>
+      </h3>
+    </div>
+
+    </div>
+  </div>
+
+  <!-- STATUS PANEL -->
+  <div id="status-panel">
+    <h2>Account Status & Operating Scope</h2>
+
+
+    <div class="status-grid">
+      <!-- Membership & Tier -->
+      <div class="status-card">
+        <h4>Membership</h4>
+        <p class="allowed"><strong>Email: </strong> <span id="snapshotEmail">—</span></p>
+        <p class="allowed"><strong>✔ Tier: </strong>LEARN_JARVIS</p>
+      </div>
+      <!-- Permissions -->
+       <div class="status-card">
+        <h4>Current Permissions</h4>
+         <p class="allowed">✔ Personal Tradedesk</p>
+         <p class="allowed">✔ Learn Jarvis Executions</p>
+      </div>
+       <!-- Unllockable Paths -->
+      <div class="status-card">
+         <h4>Unlockable Paths</h4>
+        <p class="allowed">✔ Affiliate Marketing</p>
+        <p class="allowed">✔ Copy Trader</p>
+       </div>
+       <!-- Modes -->
+      <div class="status-card">
+        <h4>System Levels</h4>
+         <p class="allowed">✔ Ledger Copy Trading (Active)</p>
+        <p class="locked">X License Upgrade (Maintenance Mode)</p>
+        <p class="locked">X Build Futures AI License (Maintenance Mode)</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; justify-content:center; gap:60px; margin-top:50px;">
+    <div style="text-align:center;">
+      <a href="#" onclick="openAffiliateSection()" 
+        style="color:#4da3ff; font-weight:bold; text-decoration:none;">
+        Affiliate Lab →
+      </a>
+    </div>
+
+    <div style="text-align:center;">
+      <a href="#" onclick="openCopyTradeSection()" 
+        style="color:#4da3ff; font-weight:bold; text-decoration:none;">
+        Copy Trader →
+      </a>    
+    </div>
+  </div>
+
+
+    <script>
+
+      // Call this when the dashboard loads or user changes
+      function renderOpenTrades(userId) {
+        google.script.run
+          .withSuccessHandler(renderTradesOnPage)
+          .getOpenTrades(userId);
+      }
+
+      function renderTradesOnPage(trades) {
+        const container = document.getElementById('openTradeContainer');
+        container.innerHTML = ''; // Clear previous trades
+
+        if (trades.length === 0) {
+          container.innerHTML = '<p>No open trades</p>';
+          return;
+        }
+
+        trades.forEach(trade => {
+          const tradeEl = document.createElement('div');
+          tradeEl.className = 'trade-card';
+          tradeEl.innerHTML = `
+            <strong>${trade.Type}</strong> | Entry: ${trade.Entry} | SL: ${trade.SL} | TP: ${trade.TP}
+          `;
+          container.appendChild(tradeEl);
+        });
+      }
+
+        // Optional: auto-refresh every 60 seconds
+        setInterval(() => {
+          renderOpenTrades(currentUserId); // make sure currentUserId is set globally
+        }, 60000);
+
+      function openAffiliateSection() {
+         // 1️⃣ Hide all sections (dashboard, affiliate, internal, etc.)
+        document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+
+        // 2️⃣ Show the affiliate section
+        document.getElementById("affiliateSection").style.display = "block";
+
+         // 3️⃣ Load affiliate status: registration or dashboard
+        loadAffiliateStatus();
+      }
+
+      function openCopyTradeSection() {
+         // 1️⃣ Hide all sections (dashboard, copytrade, internal, etc.)
+        document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+
+        // 2️⃣ Show the copytrade section
+        document.getElementById("copytradeSection").style.display = "block";
+
+         // 3️⃣ Load copytrade status: registration or dashboard
+        loadCopyTradeStatus();
+      }
+
+
+    // /////////////////////////////////   DOTS  /////////////////////////////////////////
+      function loadCopyStatusDots() {
+        const container = document.getElementById('copyStatusDots');
+        if (!container) {
+          console.warn('copyStatusDots container not found');
+          return;
+        }
+
+        container.innerHTML = '';
+
+        google.script.run
+          .withSuccessHandler(res => {
+            console.log('Copy accounts response:', res);
+            
+            if (!res || !res.success || !res.accounts) return;
+
+            res.accounts.forEach(acc => {
+              const dot = document.createElement('div');
+              const color = determineDotColor(acc);
+
+              dot.className = `copy-dot ${color}`;
+
+              dot.innerHTML = `
+                <div class="copy-tooltip">
+                  <strong>${acc.accountName}</strong><br>
+                  Platform: ${acc.platform}<br>
+                  Type: ${acc.accountType}<br>
+                  Status: ${acc.status}<br>
+                  Enabled: ${acc.enabled ? 'Yes' : 'No'}<br>
+                  Last Seen: ${formatLastSeen(acc.lastSeen)}
+                </div>
+              `;
+
+              container.appendChild(dot);
+            });
+          })
+          .getCopyAccounts();
+      }
+
+    /* -----------------------------
+      DOT COLOR LOGIC
+    ----------------------------- */
+    function determineDotColor(acc) {
+      if (!acc.enabled) return 'grey';
+      if (acc.status !== 'Connected') return 'red';
+
+      if (acc.lastSeen) {
+        const diffMin = (Date.now() - new Date(acc.lastSeen)) / 60000;
+        if (diffMin > 5) return 'yellow';
+      }
+
+      return 'green';
+    }
+
+    /* -----------------------------
+      TIME FORMATTER
+    ----------------------------- */
+    function formatLastSeen(ts) {
+      if (!ts) return 'Never';
+
+      const diff = Math.floor((Date.now() - new Date(ts)) / 60000);
+      if (diff < 1) return 'Just now';
+      if (diff < 60) return `${diff} min ago`;
+      return `${Math.floor(diff / 60)} hr ago`;
+    }
+
+    </script>
+
+</section>
+
+<!-- ================= COPYTRADER ================= -->  
+<section id="copytradeSection" style="display:none; padding:40px; background:#0b0f17; min-height:100vh;">
+
+  <!-- GLOBAL MESSAGE -->
+  <div id="copytradeMessage" style="
+      margin-bottom:20px;
+      padding:12px 16px;
+      background:rgba(77,163,255,0.12);
+      border-left:4px solid #4da3ff;
+      border-radius:6px;
+      color:#b9dcff;
+      font-size:14px;
+      display:none;
+    "></div>
+
+  <!-- BACK BUTTON -->
+  <button onclick="returnToTradeDesk()" 
+          style="margin-bottom:20px; background:#222; color:white; border:none; padding:8px 14px; cursor:pointer;">
+    ← Back to Trade Desk
+  </button>
+
+  <!-- STATUS BUBBLE -->
+  <div class="status-bubble" onclick="toggleStatusPanel()">Copy Trade Status</div>
+
+  <div style="display:flex; gap:40px; flex-wrap:wrap;">
+    <!-- LEFT COLUMN: Info -->
+    <div style="flex:1; min-width:280px;">
+      <h1 style="margin-bottom:10px;">Jarvis Bubble Lab Copy Trader Program</h1>
+
+      <div style="
+          margin-top:12px;
+          max-width:760px;
+          background:rgba(77,163,255,0.08);
+          border-left:4px solid #4da3ff;
+          padding:14px 18px;
+          border-radius:6px;
+          color:#b9dcff;
+          font-size:14px;
+          line-height:1.6;
+        ">
+        <strong style="color:#7fc1ff;">How access works:</strong><br>
+        Copy trade access is tied automatically to your Jarvis account. No extra passwords or Machine ID needed.<br>
+        Download the Listener, install it in NinjaTrader, and you’re ready to copy trades securely and safely.
+      </div>
+
+      <p p style="color:#bbb;">
+        Download the ListenerBridge.cs file, 
+        <br> then copy it into your NinjaTrader 8 folder: <code >Documents\NinjaTrader 8\bin\Custom\Strategies </code>
+        <br><br> Now, open NinjaTrader → Tools → NinjaScript Editor → Compile. 
+        <br> Once compiled successfully, the Listener will connect to Jarvis for copy trading.
+      </p>
+
+      <!-- DOWNLOAD LISTENER -->
+      <div style="margin-top:20px;">
+        <h3>Step 1: Download Listener</h3>
+        <button onclick="downloadListenerBridge()"
+                style="background:#4da3ff; color:black; padding:10px 16px; border-radius:6px; font-weight:bold; cursor:pointer;">
+          Download ListenerBridge.cs
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Form / Dashboard -->
+    <div style="flex:1; min-width:300px;">
+      <!-- COPYTRADE REGISTRATION -->
+      <div id="copytradeRegistration" style="display:block;">
+        <h2>Step 2: Activate Copy Trader</h2>
+
+        <label>Platform</label>
+        <input id="platform" type="text" style="width:100%; margin-bottom:10px;" placeholder="NinjaTrader">
+
+        <label>Account Type (SIM / LIVE)</label>
+        <input id="accountType" type="text" style="width:100%; margin-bottom:20px;" placeholder="SIM">
+
+        <button onclick="submitCopyTradeRegistration()"
+                style="background:#4da3ff; color:black; border:none; padding:10px 18px; font-weight:bold; width:100%;">
+          Activate Copy Trader
+        </button>
+      </div>
+
+      <!-- COPYTRADER DASHBOARD -->
+      <div id="copytradeDashboard" style="display:none; margin-top:20px;">
+        <h2>Your Copy Trader Dashboard</h2>
+        <div id="accountsList" style="margin-top:20px;"></div>
+        <p id="trialNotice" style="margin-top:16px; color:#7dd3fc;"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ================= SECTION MANAGEMENT =================
+    function openCopyTradeSection() {
+      hideAllSections();
+      document.getElementById("copytradeSection").style.display = "block";
+      loadCopyTradeStatus();
+    }
+
+    function returnToTradeDesk() {
+      hideAllSections();
+      document.getElementById("dashboard").style.display = "block";
+    }
+
+    function hideAllSections() {
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("copytradeSection").style.display = "none";
+    }
+
+    // ================= COPY TRADE LOGIC =================
+    function showCopyTradeMessage(msg) {
+      const el = document.getElementById('copytradeMessage');
+      el.innerText = msg;
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 5000);
+    }
+
+    function submitCopyTradeRegistration() {
+      const platform = document.getElementById('platform').value.trim();
+      const accountType = document.getElementById('accountType').value.trim();
+      if (!platform || !accountType) {
+        showCopyTradeMessage("Please fill in platform and account type.");
+        return;
+      }
+
+      google.script.run.withSuccessHandler(() => {
+        document.getElementById('copytradeRegistration').style.display = 'none';
+        document.getElementById('copytradeDashboard').style.display = 'block';
+        loadCopyTradeStatus();
+        showCopyTradeMessage("Copy Trader activated! Your trial is live for 3 days.");
+      }).activateCopyTrader(currentUserId, platform, accountType);
+    }
+
+    function loadCopyTradeStatus() {
+      google.script.run.withSuccessHandler((accounts) => {
+        const list = document.getElementById('accountsList');
+        list.innerHTML = '';
+        const now = new Date();
+
+        accounts.forEach(acc => {
+          const trialEnd = new Date(acc.trialEnd);
+          const expired = now > trialEnd;
+
+          // Account card
+          const card = document.createElement('div');
+          card.className = 'status-card';
+          card.style.marginBottom = '12px';
+          card.style.padding = '12px';
+          card.style.background = 'rgba(77,163,255,0.08)';
+          card.style.borderLeft = '4px solid #4da3ff';
+          card.innerHTML = `
+            <strong>${acc.accountName}</strong> (${acc.platform} - ${acc.accountType})<br>
+            Status: ${acc.enabled ? '🟢 Connected' : '🔴 Offline'}<br>
+            Last Execution: ${acc.lastExecutionTime || 'N/A'}<br>
+            Trial: ${expired ? '❌ Expired' : '✔ Active until ' + trialEnd.toLocaleString()}
+          `;
+
+          list.appendChild(card);
+
+          // Trial expiry
+          if (expired) {
+            document.getElementById('trialNotice').innerHTML = `
+              Your trial for ${acc.accountName} has ended. Jarvis will guide you to checkout.
+            `;
+          }
+        });
+      }).getCopyAccounts(currentUserId);
+    }
+
+    // ================= DYNAMIC LISTENER DOWNLOAD =================
+    function downloadListenerBridge() {
+      const listenerContent = `using System;
+      using System.Collections.Generic;
+      using System.Threading;
+      using System.Threading.Tasks;
+      using NinjaTrader.Gui;         // For Dispatcher
+      using NinjaTrader.NinjaScript; // For NT API access
+
+      namespace JarvisListenerBridge
+      {
+          public class ExecutionEvent
+          {
+              public string UserId { get; set; }
+              public string AccountId { get; set; }
+              public string Type { get; set; } // LONG, SHORT, CLOSE
+              public double EntryPrice { get; set; }
+              public double StopLoss { get; set; }
+              public double TakeProfit { get; set; }
+              public DateTime Timestamp { get; set; }
+          }
+
+          public class ExecutionQueue
+          {
+              private Queue<ExecutionEvent> queue = new Queue<ExecutionEvent>();
+              private readonly object _lock = new object();
+
+              public void Enqueue(ExecutionEvent evt)
+              {
+                  lock (_lock)
+                  {
+                      queue.Enqueue(evt);
+                  }
+              }
+
+              public ExecutionEvent Dequeue()
+              {
+                  lock (_lock)
+                  {
+                      if (queue.Count > 0) return queue.Dequeue();
+                      return null;
+                  }
+              }
+
+              public int Count
+              {
+                  get { lock (_lock) { return queue.Count; } }
+              }
+          }
+
+          public class ListenerBridge
+          {
+              private CancellationTokenSource cancellationTokenSource;
+              private ExecutionQueue executionQueue = new ExecutionQueue();
+              private bool isExecutionActive = false;
+              private readonly object executionLock = new object();
+
+              private bool killSwitch = false; // Emergency stop
+              private bool activeExecutionInProgress = false;
+
+              private int pollIntervalMs = 10000; // default 10 seconds
+
+              public ListenerBridge()
+              {
+                  cancellationTokenSource = new CancellationTokenSource();
+                  StartListener();
+                  StartQueueProcessor();
+              }
+
+              #region Listener Thread
+              private void StartListener()
+              {
+                  Task.Run(async () =>
+                  {
+                      while (!cancellationTokenSource.IsCancellationRequested)
+                      {
+                          try
+                          {
+                              var events = await FetchServerEvents();
+                              foreach (var evt in events)
+                              {
+                                  executionQueue.Enqueue(evt);
+                              }
+                          }
+                          catch (Exception ex)
+                          {
+                              Logger.Log("[Listener] Polling error: " + ex.Message);
+                          }
+
+                          int delay = activeExecutionInProgress ? 2000 : pollIntervalMs;
+                          await Task.Delay(delay);
+                      }
+                  });
+              }
+
+              private async Task<List<ExecutionEvent>> FetchServerEvents()
+              {
+                  // TODO: Replace with actual API call to JBL
+                  await Task.Delay(100); // simulate network latency
+                  return new List<ExecutionEvent>(); // empty for skeleton
+              }
+              #endregion
+
+              #region Queue Processor
+              private void StartQueueProcessor()
+              {
+                  Task.Run(async () =>
+                  {
+                      while (!cancellationTokenSource.IsCancellationRequested)
+                      {
+                          var evt = executionQueue.Dequeue();
+                          if (evt != null)
+                          {
+                              await Dispatcher.InvokeAsync(() =>
+                              {
+                                  try
+                                  {
+                                      SubmitOrCancelOrders(evt);
+                                  }
+                                  catch (Exception ex)
+                                  {
+                                      Logger.Log("[NT] Execution failed: " + ex.Message);
+                                      RetryOrFail(evt);
+                                  }
+                              });
+                          }
+                          else
+                          {
+                              await Task.Delay(100);
+                          }
+                      }
+                  });
+              }
+              #endregion
+
+              #region Order Execution
+              private void SubmitOrCancelOrders(ExecutionEvent evt)
+              {
+                  if (killSwitch)
+                  {
+                      Logger.Log("[NT] Kill switch active, skipping execution.");
+                      return;
+                  }
+
+                  lock (executionLock)
+                  {
+                      if (isExecutionActive)
+                      {
+                          Logger.Log("[NT] Execution skipped, already in progress.");
+                          return;
+                      }
+
+                      isExecutionActive = true;
+                      activeExecutionInProgress = true;
+
+                      try
+                      {
+                          ExecuteEvent(evt);
+                          UpdateDashboardIndicator(evt.UserId, true); // green dot
+                      }
+                      catch
+                      {
+                          UpdateDashboardIndicator(evt.UserId, false); // red dot
+                          throw;
+                      }
+                      finally
+                      {
+                          isExecutionActive = false;
+                          activeExecutionInProgress = false;
+                      }
+                  }
+              }
+
+              private void ExecuteEvent(ExecutionEvent evt)
+              {
+                  // TODO: Implement SubmitOrder / Bracket logic
+                  // Example:
+                  // SubmitOrder(OrderAction.Buy, evt.EntryPrice, evt.StopLoss, evt.TakeProfit);
+              }
+
+              private void RetryOrFail(ExecutionEvent evt)
+              {
+                  // TODO: implement retry rules (exponential backoff, max attempts)
+              }
+              #endregion
+
+              #region Kill Switch / Emergency Flatten
+              public void ActivateKillSwitch()
+              {
+                  killSwitch = true;
+                  CancelAllOrders();
+              }
+
+              public void DeactivateKillSwitch()
+              {
+                  killSwitch = false;
+              }
+
+              private void CancelAllOrders()
+              {
+                  Dispatcher.InvokeAsync(() =>
+                  {
+                      // TODO: Flatten all positions safely
+                      Logger.Log("[NT] All orders flattened due to kill switch.");
+                  });
+              }
+              #endregion
+
+              #region Dashboard Indicator
+              private void UpdateDashboardIndicator(string userId, bool success)
+              {
+                  // TODO: Update green/red dot on JBL dashboard for given user
+              }
+              #endregion
+
+              #region Shutdown
+              public void Shutdown()
+              {
+                  cancellationTokenSource.Cancel();
+                  CancelAllOrders();
+              }
+              #endregion
+          }
+
+          public static class Logger
+          {
+              public static void Log(string message)
+              {
+                  Console.WriteLine($"[{DateTime.Now}] {message}");
+              }
+          }
+      }
+
+            `;
+            const blob = new Blob([listenerContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ListenerBridge.cs';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+    }
+
+  </script>
+</section>
+
+
+<!-- ================= AFFILIATE ================= -->  
+<section id="affiliateSection" style="display:none; padding:40px; background:#0b0f17; min-height:100vh;">
+
+  <!-- GLOBAL MESSAGE -->
+  <div id="affiliateMessage" style="
+      margin-bottom:20px;
+      padding:12px 16px;
+      background:rgba(77,163,255,0.12);
+      border-left:4px solid #4da3ff;
+      border-radius:6px;
+      color:#b9dcff;
+      font-size:14px;
+      display:none;
+    "></div>
+
+  <button onclick="returnToTradeDesk()" 
+          style="margin-bottom:20px; background:#222; color:white; border:none; padding:8px 14px; cursor:pointer;">
+    ← Back to Trade Desk
+  </button>
+
+  <div style="display:flex; gap:40px; flex-wrap:wrap;">
+    <!-- LEFT COLUMN: Info -->
+    <div style="flex:1; min-width:280px;">
+      <h1 style="margin-bottom:10px;">Jarvis Bubble Lab Affiliate Program</h1>
+
+      <div style="
+          margin-top:12px;
+          max-width:760px;
+          background:rgba(77,163,255,0.08);
+          border-left:4px solid #4da3ff;
+          padding:14px 18px;
+          border-radius:6px;
+          color:#b9dcff;
+          font-size:14px;
+          line-height:1.6;
+        ">
+        <strong style="color:#7fc1ff;">How access works:</strong><br>
+        Your affiliate access is automatically tied to your Jarvis Bubble Lab account.
+        No extra passwords, no downloads, no setup steps.
+        Everything is securely managed inside your Trade Desk.
+      </div>
+
+      <p style="max-width:700px; color:#bbb; margin-top:16px;">
+        Earn commissions by creating real educational content and sharing Jarvis Bubble Lab with your audience.
+      </p>
+    </div>
+
+    <!-- RIGHT COLUMN: Form / Dashboard -->
+    <div style="flex:1; min-width:300px;">
+      <!-- AFFILIATE REGISTRATION -->
+      <div id="affiliateRegistration" style="display:none;">
+        <h2>Affiliate Registration</h2>
+
+        <label>Full Name</label>
+        <input id="affiliateName" type="text" style="width:100%; margin-bottom:10px;">
+
+        <label>PayPal Email</label>
+        <input id="affiliatePaypal" type="email" style="width:100%; margin-bottom:10px;">
+
+        <label>Stripe ID (optional)</label>
+        <input id="affiliateStripe" type="text" style="width:100%; margin-bottom:20px;">
+
+        <button onclick="submitAffiliateRegistration()"
+                style="background:#4da3ff; color:black; border:none; padding:10px 18px; font-weight:bold; width:100%;">
+          Activate Affiliate Account
+        </button>
+      </div>
+
+      <!-- AFFILIATE DASHBOARD -->
+      <div id="affiliateDashboard" style="display:none; margin-top:20px;">
+        <h2>Your Affiliate Dashboard</h2>
+
+        <div style="margin-top:20px;">
+          <strong>Affiliate ID:</strong> <span id="aff_id"></span><br>
+          <strong>20% Coupon:</strong> <span id="aff_20"></span>
+          <button onclick="copyText(aff_20.textContent)" style="margin-left:6px; background:#4da3ff; color:black; border:none; padding:4px 8px; cursor:pointer;">Copy</button><br>
+          <strong>10% Coupon:</strong> <span id="aff_10"></span>
+          <button onclick="copyText(aff_10.textContent)" style="margin-left:6px; background:#4da3ff; color:black; border:none; padding:4px 8px; cursor:pointer;">Copy</button>
+        </div>
+
+        <div style="margin-top:20px;">
+          <h3>Your Affiliate Link</h3>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <input id="affiliateLink" style="flex:1;" readonly>
+            <button onclick="copyAffiliateLink()" 
+                    style="background:#4da3ff; color:black; border:none; padding:8px 14px; font-weight:bold; cursor:pointer;">
+              Copy Link
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI TABLES -->
+        <div style="margin-top:40px;">
+          <h3>Performance</h3>
+          <p>Clicks, sales, and commissions will appear here in real time.</p>
+
+          <div class="kpi-row" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Clicks<br><span id="kClicks">0</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Sales<br><span id="kSales">0</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Conv %<br><span id="kConv">0%</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Revenue<br>$<span id="kRev">0</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Frozen<br>$<span id="kFrozen">0</span></div>
+            <div class="kpi" style="background:#111; padding:12px; border-radius:6px; flex:1; text-align:center;">Payable<br>$<span id="kPayable">0</span></div>
+          </div>
+
+          <!-- TRAFFIC PERFORMANCE -->
+          <h4 style="margin-top:30px;">Traffic Performance</h4>
+          <table id="trafficTable" style="width:100%; border-collapse:collapse; color:#fff;">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Campaign</th>
+                <th>Clicks</th>
+                <th>Sales</th>
+                <th>Conv %</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <!-- SALES & COMMISSIONS -->
+          <h4 style="margin-top:30px;">Sales & Commissions</h4>
+          <table id="salesTable" style="width:100%; border-collapse:collapse; color:#fff;">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>User</th>
+                <th>License</th>
+                <th>Sale</th>
+                <th>Rate</th>
+                <th>Commission</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- CAMPAIGN BUILDER -->
+        <h3 style="margin-top:50px;">Campaign Builder</h3>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; max-width:700px;">
+          <input id="cmpName" placeholder="Campaign name" style="flex:2; padding:8px;">
+          <select id="cmpPlatform" style="flex:1; padding:8px;">
+            <option value="twitter">X / Twitter</option>
+            <option value="youtube">YouTube</option>
+            <option value="discord">Discord</option>
+            <option value="email">Email</option>
+          </select>
+          <select id="cmpCoupon" style="flex:1; padding:8px;">
+            <option value="20">20% Coupon</option>
+            <option value="10">10% Coupon</option>
+          </select>
+          <button onclick="createCampaign()" style="background:#4da3ff; border:none; padding:10px 16px; font-weight:bold;">Create</button>
+        </div>
+
+        <div id="campaignList" style="margin-top:30px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ================= SECTION MANAGEMENT =================
+    function openAffiliateSection() {
+      hideAllSections();
+      document.getElementById("affiliateSection").style.display = "block";
+      loadAffiliateStatus();
+    }
+
+    function returnToTradeDesk() {
+      hideAllSections();
+      const dashboard = document.getElementById("dashboard");
+      dashboard.style.display = "block";
+
+      // HIDE CHILD PANELS INSIDE DASHBOARD
+      const copyTradeSection = dashboard.querySelector('#copyTradeSection');
+      if (copyTradeSection) copyTradeSection.style.display = 'none';
+
+      const otherSubPanels = dashboard.querySelectorAll('.sub-panel');
+      otherSubPanels.forEach(p => p.style.display = 'none');
+    }
+
+    // ================= GLOBAL SECTION HIDER =================
+    function hideAllSections() {
+      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+    }
+
+
+    // ================= AFFILIATE STATUS =================
+    function loadAffiliateStatus() {
+      const userID = localStorage.getItem("jarvis_userid");
+      if (!userID) { showAffiliateMessage("No user ID found — affiliate disabled."); return; }
+
+      google.script.run.withSuccessHandler(affiliate => {
+        const reg = document.getElementById("affiliateRegistration");
+        const dash = document.getElementById("affiliateDashboard");
+
+        if (affiliate && affiliate.affiliateID) {
+          reg.style.display = "none";
+          dash.style.display = "block";
+          showAffiliateDashboard(affiliate);
+          loadAffiliateDashboard(affiliate.affiliateID);
+        } else {
+          reg.style.display = "block";
+          dash.style.display = "none";
+        }
+      }).getAffiliateByUser(userID);
+    }
+
+    // ================= DASHBOARD DISPLAY =================
+    function showAffiliateDashboard(affiliate) {
+      document.getElementById("affiliateRegistration").style.display = "none";
+      document.getElementById("affiliateDashboard").style.display = "block";
+      document.getElementById("aff_id").textContent = affiliate.affiliateID;
+      document.getElementById("aff_20").textContent = affiliate.code20;
+      document.getElementById("aff_10").textContent = affiliate.code10;
+      document.getElementById("affiliateLink").value = `${window.location.origin}?ref=${affiliate.affiliateID}`;
+
+      google.script.run.withSuccessHandler(campaigns => {
+        campaignList.innerHTML = "";
+        campaigns.forEach(c => {
+          renderCampaign({
+            name: c.name,
+            platform: c.platform,
+            coupon: c.coupon,
+            link: `${window.location.origin}?ref=${affiliate.affiliateID}&src=${c.platform}&cmp=${c.campaignID}`
+          });
+        });
+      }).getAffiliateCampaigns(affiliate.affiliateID);
+    }
+
+    // ================= REGISTRATION =================
+    function submitAffiliateRegistration() { 
+      const name = affiliateName.value.trim();
+      const paypal = affiliatePaypal.value.trim();
+      const stripe = affiliateStripe.value.trim();
+      const userID = localStorage.getItem("jarvis_userid");
+      if (!name || !paypal) { showAffiliateMessage("Name and PayPal email are required."); return; }
+
+      google.script.run.withSuccessHandler(existing => {
+        if (existing && existing.affiliateID) {
+          showAffiliateDashboard(existing);
+          loadAffiliateDashboard(existing.affiliateID);
+          showAffiliateMessage("You are already an affiliate!");
+        } else {
+          google.script.run.withSuccessHandler(res => {
+            showAffiliateDashboard(res);
+            loadAffiliateDashboard(res.affiliateID);
+            showAffiliateMessage("Affiliate account activated!");
+          }).registerAffiliate(userID, name, paypal, stripe);
+        }
+      }).getAffiliateByUser(userID);
+    }
+
+    // ================= DASHBOARD DATA =================
+    function loadAffiliateDashboard(affiliateID) {
+      google.script.run.withSuccessHandler(data => {
+        const k = data.kpis;
+        kClicks.textContent = k.clicks;
+        kSales.textContent = k.sales;
+        kConv.textContent = (k.conversionRate * 100).toFixed(1) + "%";
+        kRev.textContent = k.revenue.toFixed(2);
+        kFrozen.textContent = k.frozen.toFixed(2);
+        kPayable.textContent = k.payable.toFixed(2);
+
+        const tBody = document.querySelector("#trafficTable tbody");
+        tBody.innerHTML = "";
+        data.traffic.forEach(r => {
+          const rate = r.clicks ? ((r.conversions / r.clicks) * 100).toFixed(1) : "0";
+          tBody.innerHTML += `<tr><td>${r.source}</td><td>${r.campaign}</td><td>${r.clicks}</td><td>${r.conversions}</td><td>${rate}%</td></tr>`;
+        });
+
+        const sBody = document.querySelector("#salesTable tbody");
+        sBody.innerHTML = "";
+        data.sales.forEach(r => {
+          sBody.innerHTML += `<tr><td>${new Date(r.date).toLocaleDateString()}</td><td>${r.user}</td><td>${r.license}</td><td>$${r.sale}</td><td>${(r.rate * 100)}%</td><td>$${r.commission.toFixed(2)}</td><td>${r.status}</td></tr>`;
+        });
+      }).getAffiliateDashboardData(affiliateID);
+    }
+
+    // ================= CAMPAIGN CREATION =================
+    function createCampaign() {
+      const affiliateID = document.getElementById("aff_id").textContent.trim().toUpperCase(); 
+      const name = cmpName.value.trim();
+      const platform = cmpPlatform.value;
+      const coupon = cmpCoupon.value === "20" ? aff_20.textContent : aff_10.textContent;
+
+      if (!name) { 
+        showAffiliateMessage("Campaign name required."); 
+        return; 
+      }
+
+      google.script.run.withSuccessHandler(res => {
+        renderCampaign({name, platform, coupon, link: res.trackingLink});
+        cmpName.value = "";
+        showAffiliateMessage("Campaign created successfully!");
+      }).createAffiliateCampaign({
+        affiliateID,
+        name,
+        platform,
+        coupon,
+        baseUrl: window.location.origin
+      });
+    }
+
+    function renderCampaign(c) {
+      const div = document.createElement("div");
+      div.style.marginBottom = "20px";
+      div.style.padding = "16px";
+      div.style.background = "#0f172a";
+      div.style.borderRadius = "10px";
+
+      const text = `Trading with Jarvis Bubble Lab — clean ORB entries & real risk control.\nUse code ${c.coupon}\n👇\n${c.link}`;
+
+      div.innerHTML = `
+        <strong>${c.name}</strong> <span style="opacity:.6">(${c.platform})</span><br><br>
+        <input value="${c.link}" style="width:100%; margin-bottom:10px;" readonly>
+        <button onclick="shareX(\`${text}\`)">🐦 Share</button>
+        <button onclick="copyText(\`${text}\`)">📋 Copy</button>
+      `;
+      campaignList.prepend(div);
+    }
+
+    function shareX(text) {
+      window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
+    }
+
+    // ================= COPY / MESSAGE =================
+    function copyAffiliateLink() {
+      const input = document.getElementById("affiliateLink");
+      input.select();
+      input.setSelectionRange(0, 99999);
+
+      navigator.clipboard.writeText(input.value)
+        .then(() => showAffiliateMessage("Affiliate link copied!"))
+        .catch(() => showAffiliateMessage("Unable to copy link, please copy manually."));
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text)
+        .then(() => showAffiliateMessage("Text copied to clipboard!"))
+        .catch(() => showAffiliateMessage("Unable to copy text."));
+    }
+
+    function showAffiliateMessage(msg) {
+      const div = document.getElementById("affiliateMessage");
+      div.textContent = msg;
+      div.style.display = "flex";
+      div.style.opacity = 1;
+      setTimeout(() => {
+        div.style.transition = "opacity 0.5s ease";
+        div.style.opacity = 0;
+        setTimeout(() => div.style.display = "none", 500);
+      }, 4000);
+    }
+
+    function cancelAffiliateLink() {
+      showAffiliateMessage("Affiliate link has been canceled.");
+    }
+  </script>
+
+</section>
+
+
+<!-- ================= RISK ================= -->
+<section id="risk">
+  <div
+    style="
+      display:flex;
+      align-items:flex-start;
+      gap:40px;
+      flex-wrap:nowrap;
+    "
+  >
+
+    <img
+      src="https://lh3.googleusercontent.com/d/1UhEcFuvk0Q1p2Bpo46j7JEXJLJS7Jy5q"
+      style="
+        max-width:400px;
+        width:100%;
+        border-radius:8px;
+        flex-shrink:0;
+      "
+    />
+
+    <div style="flex:1;">
+      <h2>Risk & Educational Notice</h2>
+
+      <p>
+        Jarvis Bubble Lab provides an online educational experience inside a users trade desk. No real trades are executed, and no investment advice is provided.
+      </p>
+
+      <p>
+        All trades displayed or recorded within our Jarvis website are phantom (hypothetical) and are used solely for information, educational and training purposes. Simulated results do not represent actual trading performance and do not guarantee future outcomes.
+      </p>
+
+      <p>
+        Participation fees after 30 days grant access to continued online learning of the software, and simulated trading features only. No real capital is traded or at risk through Jarvis Bubble Lab webiste.
+      </p>
+
+      <p>
+        Jarvis software strategies is designed to promote disciplined decision-making within a structured learning environment. Participation rules and time-based mechanics are implemented to support focus, consistency, and skill development, not to manage or control real trading activity.
+      </p>
+
+      <p>
+        Users remain fully responsible for any trading decisions made in their own personal accounts outside of the Jarvis platform.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= SAAS ================= -->
+<section id="saas">
+
+  <!-- Top Flex Row -->
+  <div class="saas-top" style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:40px;">
+  <div class="saas-image" style="flex:1; min-width:250px; position:relative; display:inline-block;">
+    <img src="https://lh3.googleusercontent.com/d/157MNyB8UmKwiPRv6UXceH_Blo5A13eBZ" 
+        alt="Jarvis Bubble Lab Licensing" 
+        style="width:100%; border-radius:12px;">
+
+    <!-- Tooltip -->
+    <div class="tooltip-text">
+      Following are instructions to generate and register your Machine ID for JarvisBubbleLab Products License:<br><br>
+      1. Go to the Ninjatrader Control Center, then click Help &gt; “3rd party licensing”<br>
+      2. At the “Vendor Name” field, input: <strong>JarvisBubbleLab</strong><br>
+      3. At the “User Defined ID” field, input anything to identify you (e.g., FirstName, LastName, CompanyName)<br>
+      4. Press “Submit” once. This links your Machine/User ID to JarvisBubbleLab at the NinjaTrader license server<br>
+      5. Copy the Signed Machine ID to the checkout page field “Signed Ninjatrader Machine ID 1”<br>
+      6. For additional machines, use fields 2, 3, etc.<br>
+      7. Close the “3rd party licensing” window
+    </div>
+  </div>
+
+    <style>
+    .saas-image .tooltip-text {
+      display: none;
+      position: absolute;
+      top: 100%; /* below the image */
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      width: 300px;
+      font-size: 13px;
+      line-height: 1.5;
+      z-index: 100;
+      white-space: normal;
+      text-align: left;
+    }
+
+    .saas-image:hover .tooltip-text {
+      display: block;
+    }
+    </style>
+
+    <div class="saas-description" style="flex:1; min-width:520px;">
+          <div class="license-billboard" style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+          <div class="license-card" style="flex:1; min-width:50px; border:1px solid #222; border-radius:12px; padding:20px; background:#11151c;">
+
+          <p><strong>NinjaTrader License Phases </strong></p>
+
+          <div class="table-wrap">
+            <table class="funnel-table">
+              <thead>
+                <tr>
+                  <th>Stage</th>
+                  <th>Duration</th>
+                  <th>Cost</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Free Trial</td>
+                  <td>3 days</td>
+                  <td>$0</td>
+                  <td>Low friction entry</td>
+                </tr>
+                <tr>
+                  <td>Short-Term Access</td>
+                  <td>8 days</td>
+                  <td>$125</td>
+                  <td>Curiosity → payment</td>
+                </tr>
+                <tr>
+                  <td>Mid-Term Access</td>
+                  <td>17 days</td>
+                  <td>$750</td>
+                  <td>Users see real value</td>
+                </tr>
+                <tr>
+                  <td>Full Subscription</td>
+                  <td>Ongoing</td>
+                  <td>$899/month</td>
+                  <td>Premium commitment</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <p style="margin-top:20px; line-height:1.6;">
+      <form id="licenseForm">
+        Wait for trial to end or proceed now to add more days.<br><br><label>Insert Your Email:</label>
+        <input type="email" name="email" required>
+
+        <label>Insert Your Machine ID:</label>
+        <input type="text" name="machineId" required>
+
+        <input type="submit" value="Get License Key">
+      </form> <br> Proceed to the section below to purchase an extenstion for the license.
+
+      </p>
+    </div>
+  </div>
+
+  <!-- License Billboard -->
+  <div class="license-billboard" style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
+
+    <!-- LICENSE I -->
+    <div class="license-card" style="flex:1; min-width:250px; border:1px solid #222; border-radius:12px; padding:20px; background:#11151c;">
+      <h3>30/60 Minute ORB Trade Automation</h3>
+      <div class="price">$899</div>
+      <p>
+        ✅ Key Features in This Version<br>
+        - ORB Duration Toggle: 30 or 60 minutes (user selectable)<br>
+        - Fades: Disabled on trend days automatically<br>
+        - Pivot Target Override: ATR decay model (75% per bar, max 5 bars)<br>
+        - Bubble Grades: A+, A, B, C with clear color coding<br>
+        - Brackets: ATR-based profit/stop<br>
+        - One trade per day — client-friendly and subscription-safe.
+      </p>
+      <ul>
+        <li>Ready-to-use NinjaTrader script</li>
+        <li>Setup instructions included</li>
+        <li>Single-user license</li>
+      </ul>
+      <button class="btn-primary" onclick="toggleFlow('I')">Buy License</button>
+
+      <div class="license-flow" id="flow-I" style="display:none; margin-top:20px;">
+        <label>Are you 18 years or older?</label>
+        <select id="age-I">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label style="margin-top:10px;"><br><br>
+          Do you understand Jarvis Bubble Lab does not provide trading advice?
+        </label>
+        <select id="advice-I">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label style="margin-top:10px;"><br><br>
+          Would you like to attempt the $50,000 Challenge first?
+        </label>
+        <select id="challenge-I">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <button class="btn-secondary" style="margin-top:15px;" onclick="submitLicenseInline('I')">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <!-- LICENSE II -->
+    <div class="license-card featured" style="flex:1; min-width:250px; border:2px solid #00ff9c; border-radius:12px; padding:20px; background:#11151c;">
+      <h3>Jarvis ATR Pullback</h3>
+      <div class="price">$899</div>
+      <p>
+        Advanced Jarvis strategy with enhanced logic and performance controls.
+        Designed for serious traders and small firms. This script takes multiple momentum trades currently during New York morning session. Strict ATR proprietary targets with previous bar risk. Jarvis Bubble Graded Entry's, as well as win loss static bubbles for each trade of the day.
+      </p>
+      <ul>
+        <li>Advanced script logic</li>
+        <li>Ready-to-use NinjaTrader script</li>
+        <li>Setup instructions included</li>
+        <li>Single-user license</li>
+      </ul>
+      <button class="btn-primary" onclick="toggleFlow('II')">Buy License</button>
+
+      <div class="license-flow" id="flow-II" style="display:none; margin-top:20px;">
+        <label>Are you 18 years or older?</label>
+        <select id="age-II">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label style="margin-top:10px;"><br><br>
+          Do you understand Jarvis Bubble Lab does not provide trading advice?
+        </label>
+        <select id="advice-II">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label style="margin-top:10px;"><br><br>
+          Would you like to attempt the $50,000 Challenge first?
+        </label>
+        <select id="challenge-II">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <button class="btn-secondary" style="margin-top:15px;" onclick="submitLicenseInline('II')">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <!-- BUILD YOUR OWN -->
+    <div class="license-card" style="flex:1; min-width:250px; border:1px solid #222; border-radius:12px; padding:20px; background:#11151c;">
+      <h3>Build Your Own Jarvis</h3>
+      <div class="price custom">Custom Pricing</div>
+      <p>
+        Design a fully customized Jarvis system.
+        Ideal for firms, prop groups, and enterprise traders.
+      </p>
+      <ul>
+        <li>12-step guided questionnaire</li>
+        <li>Email + internal review</li>
+        <li>Optional NinjaTrader webhook</li>
+      </ul>
+      <button class="btn-secondary" onclick="startBuild()">Start Build</button>
+
+      <div id="byoFlow" style="display:none; margin-top:20px; border:1px solid #222; padding:20px; background:#11151c; border-radius:12px;">
+        <h3 id="byoTitle">Step 1 / 12</h3>
+        <p id="byoQuestion"></p>
+        <input type="text" id="byoAnswer" placeholder="Your answer here"
+          style="width:100%; padding:10px; margin-top:10px; font-size:16px;" />
+        <div style="margin-top:15px;">
+          <button class="btn-secondary" onclick="byoBack()">Back</button>
+          <button class="btn-primary" onclick="byoNext()">Next</button>
+          <button class="btn-secondary" onclick="byoCancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEBHOOK MODAL -->
+  <div id="webhookModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.7); justify-content:center; align-items:center;">
+    <div style="background:#111; padding:30px; border-radius:12px; max-width:420px; color:white; text-align:center;">
+      <h3>Do you understand you are licensing this software as is?</h3>
+      <p>
+        And, you may lose money and are willing to take the risk?
+        <strong>And will hold Jarvis Bubble Lab harmless of said losses?</strong>
+      </p>
+      <button class="btn-secondary" onclick="finalizeLicense(false)">Yes, all losses are my own</button>
+      <button class="btn-secondary" style="margin-top:10px;" onclick="cancelWebhook()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- FINAL CHECKOUT CONFIRMATION -->
+  <div id="checkoutConfirm" style="display:none; margin-top:40px; text-align:center;"></div>
+
+  <script>
+    function toggleFlow(type) {
+      const flow = document.getElementById('flow-' + type);
+      flow.style.display = flow.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function submitLicenseInline(type) {
+      window.selectedLicense = type;
+      document.getElementById('webhookModal').style.display = 'flex';
+    }
+
+    function cancelWebhook() {
+      document.getElementById('webhookModal').style.display = 'none';
+    }
+
+    function finalizeLicense(addWebhook){
+      document.getElementById('webhookModal').style.display='none';
+
+      if(window.byoSubmission){
+        window.byoSubmission.CustomRequirements = addWebhook
+          ? "Webhook added"
+          : window.byoSubmission.CustomRequirements;
+        google.script.run.submitBuildYourOwn(window.byoSubmission);
+      }
+
+      const licenseNameMap = {
+        I: "30/60 Minute ORB",
+        II: "Jarvis ATR Pullback",
+        BYO: "Build Your Own Jarvis"
+      };
+
+      const licenseCode = window.selectedLicense || 'BYO';
+      const licenseDisplayName = licenseNameMap[licenseCode] || licenseCode;
+
+      const checkoutDiv = document.getElementById('checkoutConfirm');
+      checkoutDiv.style.display='block';
+      checkoutDiv.innerHTML=`
+        <h3 style="color:#00ff9c;">You're Almost Done</h3>
+        <p>
+          Your license selection (<strong>${licenseDisplayName}</strong>) has been confirmed.
+          Click below to complete secure checkout.
+        </p>
+        <button class="btn-primary" onclick="proceedStripe()">Proceed to Secure Checkout</button>
+        <p style="font-size:12px; color:#888; margin-top:10px;">
+          Stripe Checkout integration placeholder
+        </p>
+      `;
+    }
+
+    function proceedStripe(){
+      const license = window.selectedLicense || 'BYO';
+      let amount = 0;
+      if(license==='I') amount=899;
+      else if(license==='II') amount=899;
+      alert(
+        `This would redirect to Stripe Checkout for ${license}. ` +
+        `Amount: ${amount>0 ? '$'+amount : 'Custom pricing'}`
+      );
+    }
+  </script>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer-bar">
+  <div class="footer-left">
+    <p>Jarvis Bubble Lab</p>
+    <p>Cleveland, OH</p>
+    <p>440-661-5487</p>
+    <p>© 2026 by Jarvis Bubble Lab.</p>
+  </div>
+
+  <div class="footer-center">
+    <a href="https://x.com/TheJarvisBubble" class="social-circle">X</a>
+    <a href="#" class="social-circle">T</a>
+    <a href="#" class="social-circle">F</a>
+    <a href="#" class="social-circle">I</a>
+  </div>
+
+  <div class="footer-right">
+    <p onclick="show('accessibility')">Accessibility Statement</p>
+    <p onclick="show('privacy')">Privacy Policy</p>
+    <p onclick="show('refund')">Refund Policy</p>
+    <p onclick="show('terms')">Terms & Conditions</p>
+  </div>
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+  let currentUserId = null;
+
+// ================= VISITOR ID =================
+function getVisitorId() {
+  let v = localStorage.getItem('jarvis_visitor_id');
+  if (!v) {
+    v = 'anon_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    localStorage.setItem('jarvis_visitor_id', v);
+  }
+  return v;
+}
+
+// ================ NO TRADE UNTIL PASSWORD ==============
+// ================= PASSWORD / TRADE GUARD =================
+function setPasswordStatus(user) {
+  const hasPassword = !!user.Password;
+  localStorage.setItem('jarvis_has_password', hasPassword ? '1' : '0');
+}
+
+function canUserTrade() {
+  return localStorage.getItem('jarvis_has_password') === '1';
+}
+
+function showTradeBlockedMessage() {
+  const el = document.getElementById('openTrades');
+  if (!el) return;
+
+  el.innerHTML = `
+    <div style="
+      color:#ef4444;
+      font-weight:bold;
+      padding:12px;
+      border:1px solid #ef4444;
+      border-radius:8px;
+      background:rgba(239,68,68,0.08);
+      margin-top:8px;
+    ">
+      🔒 Trading Locked<br>
+      You need to create a password and secure your account in order to place trades.
+    </div>
+  `;
+}
+
+// ================= CHALLENGE HELPERS =================
+function hideAllChallengeSteps() {
+  challengeStepEmail.style.display = 'none';
+  challengeStepLogin.style.display = 'none';
+  challengeStepConfirm.style.display = 'none';
+}
+
+function showEmail() { show('challenge'); challengeStepEmail.style.display = 'block'; }
+function showLogin() { show('challenge'); challengeStepLogin.style.display = 'block'; }
+function showConfirm() { show('challenge'); challengeStepConfirm.style.display = 'block'; }
+
+// ================= MEMBER PASSWORD LOGIN =================
+function submitMemberPassword() {
+  const email = memberEmail.value.trim();
+  const pw = memberPassword.value.trim();
+  if (!email || !pw) return showLoginError('Enter email and password');
+
+  loginLoading.style.display = 'block';
+
+  google.script.run.withSuccessHandler(user => {
+    loginLoading.style.display = 'none';
+    if (!user) return showLoginError('Invalid login');
+
+    // ✅ Store credentials + userID for affiliate
+    localStorage.setItem('jarvis_logged_in', '1');
+    localStorage.setItem('jarvis_email', email);
+    if (user.UserID) {
+      localStorage.setItem('jarvis_userid', user.UserID);
+    }
+
+    loadDashboard(user);
+  }).getMemberLogin(email, pw);
+}
+
+function showLoginError(msg) {
+  loginError.innerText = msg;
+  loginError.style.display = 'block';
+}
+
+// ================= EMAIL CHALLENGE =================
+function submitChallengeEmail() {
+  const email = challengeEmail.value.trim();
+  if (!email) return alert('Email required');
+
+  localStorage.setItem('jarvis_email', email);
+  challengeLoading.style.display = 'block';
+
+  google.script.run.withSuccessHandler(user => {
+    // Immediately load dashboard for new users to show password box
+    loadDashboard(user);
+  }).getOrCreateUser(email, getVisitorId());
+}
+
+function enterDashboardFromChallenge() {
+  google.script.run.withSuccessHandler(user => {
+    localStorage.setItem('jarvis_logged_in', '1');
+    loadDashboard(user);
+  }).getOrCreateUser(localStorage.getItem('jarvis_email'), getVisitorId());
+}
+
+// ================= DASHBOARD =================
+function toggleStatusPanel() {
+  document.getElementById('status-panel').classList.toggle('open');
+}
+
+function loadDashboard(user) {
+  setPasswordStatus(user);
+
+  if (!user || !user.UserID) return alert('UserID missing');
+
+  currentUserId = user.UserID;
+
+  show('dashboard');
+  document.body.classList.add('dashboard-mode');
+
+  // SNAPSHOT (email + visits immediately)
+  document.getElementById('snapshotEmail').innerText = user.Email || 'Guest';
+  document.getElementById('snapshotVisits').innerText = user.Visits || '0';
+
+  if (!user.Password) {
+  passwordBox.style.display = 'block';
+  showTradeBlockedMessage();
+  }
+
+  // BALANCE (authoritative)
+  google.script.run.withSuccessHandler(balance => {
+    document.getElementById('snapshotBalance').innerText =
+      Number(balance || 0).toFixed(2);
+  }).getUserTodayBalance(user.UserID);
+
+  // FULL USER + CALENDAR (parallel, same load phase)
+  google.script.run.withSuccessHandler(full => {
+    if (!full || !full.user) {
+      console.error('Full user data missing', full);
+      return;
+    }
+
+    user.licenses = full.licenses || [];
+    user.products = full.products || {};
+    user.AffiliateID = full.user.AffiliateID || '';
+
+    renderStatusPanel(user);
+
+  }).getFullUserData(user.UserID);
+}
+
+// ================= MODE UI =================
+function setModes(modes) {
+  document.querySelectorAll('[data-mode]').forEach(el => {
+    const key = el.dataset.mode;
+    const enabled = modes[key];
+    el.className = enabled ? 'allowed' : 'locked';
+    el.innerText = (enabled ? '✔ ' : '✖ ') + el.dataset.label;
+  });
+}
+
+// ================= TRADES =================
+let tradeState = {
+  active: false,
+  tradeId: null,
+  entryPrice: null,
+  side: null
+};
+
+function updateButtons() {
+  document.querySelector('.long').disabled = tradeState.active;
+  document.querySelector('.short').disabled = tradeState.active;
+  document.querySelector('.close').disabled = !tradeState.active;
+}
+
+function act(action) {
+  const userId = localStorage.getItem('jarvis_userid');
+  if (!userId) return alert('Not logged in');
+
+    // 🔒 PASSWORD GUARD
+  if (!canUserTrade()) {
+    showTradeBlockedMessage();
+    return;
+  }
+
+  document.getElementById('message').innerText = 'Processing...';
+
+  google.script.run
+    .withSuccessHandler(res => {
+      document.getElementById('message').innerText = res.message;
+
+      if (res.state === 'OPEN') {
+        tradeState.active = true;
+        tradeState.tradeId = res.tradeId;
+        tradeState.entryPrice = res.entry;
+        tradeState.side = res.side;
+
+        document.getElementById('prices').innerText =
+          `Entry: ${res.entry} | SL: ${res.sl} | TP: ${res.tp}`;
+      }
+
+      if (res.state === 'CLOSED') {
+        tradeState.active = false;
+        tradeState.tradeId = null;
+
+        document.getElementById('prices').innerText =
+          `Closed @ ${Number(res.exit).toFixed(2)} | P/L:$ ${Number(res.pl).toFixed(2)}`;
+
+
+        // 🔥 REAL-TIME BALANCE UPDATE
+        if (res.balance !== undefined) {
+          document.getElementById('snapshotBalance').innerText =
+            Number(res.balance).toFixed(2);
+        }
+      }
+
+      updateButtons();
+    })
+    .withFailureHandler(err => {
+      document.getElementById('message').innerText = err.message;
+    })
+    .handleTradeAction({
+      action,
+      userId,
+      tradeId: tradeState.tradeId
+    });
+}
+
+updateButtons();
+
+// ================= NAVIGATION =================
+function show(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ================= PASSWORD =================
+function savePassword() {
+  const pwInput = document.getElementById('pw');
+  const password = pwInput.value.trim();
+  const email = localStorage.getItem('jarvis_email');
+  if (!password) return alert('Please enter a password');
+  if (!email) return alert('Session expired. Please restart.');
+
+  const pwStatus = document.getElementById('pwStatus');
+  const saveBtn = document.getElementById('savePwBtn');
+
+  pwStatus.style.display = 'block';
+  pwStatus.innerText = 'Saving password…';
+  saveBtn.disabled = true;
+
+  google.script.run
+    .withSuccessHandler(() => {
+  pwStatus.innerText = 'Password saved!';
+  localStorage.setItem('jarvis_has_password', '1');
+
+  setTimeout(() => {
+    document.getElementById('passwordBox').style.display = 'none';
+
+    // 🔓 Clear lock message
+    const el = document.getElementById('openTrades');
+    if (el) el.innerHTML = 'No open trades.';
+  }, 800);
+  })
+
+    .withFailureHandler(err => {
+      console.error(err);
+      pwStatus.innerText = 'Unable to save password';
+      saveBtn.disabled = false;
+    })
+    .setPassword(email, password);
+}
+
+// ================= TESTIMONIALS =================
+function loadTestimonials() {
+  google.script.run.withSuccessHandler(data => {
+    const grid = document.getElementById('testimonial-grid');
+    grid.innerHTML = '';
+    if (!data || !data.length) { grid.innerHTML = '<p>Testimonials coming soon.</p>'; return; }
+    data.forEach(t => {
+      const div = document.createElement('div');
+      div.className = 'testimonial-item';
+      div.innerHTML = `<p>${t.Testimonial}</p><strong>— ${t.DisplayName}</strong>`;
+      grid.appendChild(div);
+    });
+  }).getTestimonials();
+}
+
+// ================= LOGOUT =================
+function logout() {
+  localStorage.removeItem('jarvis_logged_in');
+
+  // Hide dashboard
+  const dashboard = document.getElementById('dashboard');
+  if (dashboard) dashboard.style.display = 'none';
+
+  // Show login form
+  const landing = document.getElementById('challengeLanding');
+  if (landing) landing.style.display = 'block';
+
+  // Prefill email
+  const email = localStorage.getItem('jarvis_email');
+  if (email) document.getElementById('loginEmail').value = email;
+
+  if (typeof loadTestimonials === 'function') loadTestimonials();
+}
+
+// ================= LOGIN =================
+function submitLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw = document.getElementById('loginPassword').value.trim();
+
+  if (!email || !pw) return showLoginError('Enter email and password');
+
+  // Optional loading indicator
+  if (typeof loginLoading !== 'undefined') loginLoading.style.display = 'block';
+
+  google.script.run.withSuccessHandler(user => {
+    if (typeof loginLoading !== 'undefined') loginLoading.style.display = 'none';
+    if (!user) return showLoginError('Invalid login');
+
+    // ✅ Store credentials
+    localStorage.setItem('jarvis_logged_in', '1');
+    localStorage.setItem('jarvis_email', email);
+    if (user.UserID) localStorage.setItem('jarvis_userid', user.UserID);
+
+    // Hide login form
+    document.getElementById('challengeLanding').style.display = 'none';
+
+    // Show dashboard
+    const dashboard = document.getElementById('dashboard');
+    if (dashboard) dashboard.style.display = 'block';
+
+    // Load dashboard content
+    if (typeof loadDashboard === 'function') loadDashboard(user);
+
+  }).getMemberLogin(email, pw);
+}
+
+
+// ================= ERROR HANDLING =================
+function showLoginError(msg) {
+  const err = document.getElementById('loginError');
+  err.textContent = msg;
+  err.style.display = 'block';
+}
+
+// ================= RENDER =================
+function renderStatusPanel(user) {
+  // ---------------- BASIC INFO ----------------
+  document.getElementById('statusEmail').innerText = user.Email || '—';
+  document.getElementById('statusMembership').innerText =
+    user.AccountStatus || 'Member';
+
+  // ---------------- LICENSES ----------------
+  const licenses = user.licenses || [];
+  const activeLicenses = licenses.filter(l => l.Active);
+
+  document.getElementById('statusLicense').innerText =
+    activeLicenses.length
+      ? activeLicenses.map(l => `${l.ProductID} (${l.PurchasedLevel})`).join(', ')
+      : 'None';
+
+  // ---------------- TIER ----------------
+  const tier = activeLicenses.some(l =>
+    ['8Day','17Day','Subscription'].includes(l.PurchasedLevel)
+  ) ? 'Pro' : 'Member';
+
+  document.getElementById('statusTier').innerText = tier;
+
+  // ---------------- MODE LEVELS ----------------
+  const products = user.products || {};
+  const modeLevels = document.getElementById('modeLevels');
+  modeLevels.innerHTML = '';
+
+  const modes = [
+    { key: 'LearnJarvis', label: 'DESK Mode' },
+    { key: 'OrbTradeIDNumber', label: 'ORB Trading' },
+    { key: 'ATRPullbackIDNumber', label: 'ATR Pullback' },
+    { key: 'BuildYourOwnIDNumber', label: 'Build-Your-Own' },
+    { key: '8DayIDNumber', label: '8-Day Strategy' },
+    { key: '17DayIDNumber', label: '17-Day Strategy' }
+  ];
+
+  modes.forEach(m => {
+    const p = document.createElement('p');
+    const enabled = products[m.key] === 'Active';
+    p.className = enabled ? 'allowed' : 'locked';
+    p.innerText = (enabled ? '✔ ' : '✖ ') + m.label;
+    modeLevels.appendChild(p);
+  });
+
+  // ---------------- PERMISSIONS ----------------
+  const permissionsList = document.getElementById('permissionsList');
+  permissionsList.innerHTML = '';
+
+  [
+    'Personal Trade Desk',
+    'Live Learn Jarvis Trades',
+    'Jarvis Phantom Copy Trading'
+  ].forEach(label => {
+    const li = document.createElement('li');
+    li.className = 'allowed';
+    li.innerText = '✔ ' + label;
+    permissionsList.appendChild(li);
+  });
+
+  // ---------------- UNLOCKABLE PATHS ----------------
+  const unlockList = document.getElementById('unlockableList');
+  unlockList.innerHTML = '';
+
+  const unlockables = [
+    { label: 'Affiliate Program', unlocked: !!user.AffiliateID },
+    { label: 'Strategy Upgrades', unlocked: tier !== 'Pro' },
+    { label: 'Institutional License', unlocked: false }
+  ];
+
+  unlockables.forEach(u => {
+    const li = document.createElement('li');
+    li.className = u.unlocked ? 'allowed' : 'locked';
+    li.innerText = (u.unlocked ? '✔ ' : '✖ ') + u.label;
+    unlockList.appendChild(li);
+  });
+
+  // ---------------- STATUS BUBBLE ----------------
+  document.querySelector('.status-bubble').innerText =
+    `Tier: ${tier} · MODE: DESK`;
+}
+
+// ================= CALENDAR =================
+
+function populateCalendar(containerId, daily, monthly) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  // --- DAILY ---
+  const dailyButtons = Array.from(container.querySelectorAll('.day-btn')).slice(0, 25);
+  const recentDaily = daily.slice(-25); // last 25 entries
+  dailyButtons.forEach((btn, i) => {
+    const val = recentDaily[i];
+    btn.classList.remove('allowed', 'locked');
+    btn.innerHTML = btn.textContent.split('<')[0]; // reset label
+
+    if (val != null) {
+      btn.innerHTML += `<br>${Number(val).toFixed(2)} pts`;
+      btn.classList.add(val >= 0 ? 'allowed' : 'locked');
+    } else {
+      btn.innerHTML += `<br>—`;
+    }
+  });
+
+  // --- MONTHLY ---
+  const monthButtons = Array.from(container.querySelectorAll('.month-btn')).slice(0, 12);
+  monthButtons.forEach((btn, i) => {
+    const val = monthly[i];
+    btn.classList.remove('allowed', 'locked');
+    btn.innerHTML = btn.textContent.split('<')[0];
+
+    if (val != null) {
+      btn.innerHTML += `<br>${Number(val).toFixed(2)} pts`;
+      btn.classList.add(val >= 0 ? 'allowed' : 'locked');
+    } else {
+      btn.innerHTML += `<br>—`;
+    }
+  });
+}
+
+// Called after loadDashboard
+function loadMyCalendar(userId) {
+  if (!userId) return;
+
+  const container = document.getElementById('my-calendar');
+  const POINT_VALUE = 5; // $5 per point
+
+  google.script.run.withSuccessHandler(data => {
+    if (!data) {
+      container.innerHTML += '<p>No calendar data found.</p>';
+      return;
+    }
+
+    let html = `
+      <h3>
+        My Trade Results & Monthly Data 9:30am - 4pm
+        <button class="toggle-calendar" onclick="toggleCalendar('jarvis')">
+          Show Jarvis Overview
+        </button>
+      </h3>
+
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="border:1px solid #333; padding:6px;">Day / Month</th>
+            <th style="border:1px solid #333; padding:6px; text-align:right;">Points</th>
+            <th style="border:1px solid #333; padding:6px; text-align:right;">Cash Value</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === 'UserID') return;
+
+      const points = Number(value);
+      if (isNaN(points)) return;
+
+      const cash = points * POINT_VALUE;
+      const cashColor = cash >= 0 ? '#22c55e' : '#ef4444'; // green / red
+
+      html += `
+        <tr>
+          <td style="border:1px solid #333; padding:6px;">${key}</td>
+          <td style="border:1px solid #333; padding:6px; text-align:right;">
+            ${points.toFixed(2)} pts.
+          </td>
+          <td style="border:1px solid #333; padding:6px; text-align:right; color:${cashColor}; font-weight:bold;">
+            $${cash.toFixed(2)}
+          </td>
+        </tr>
+      `;
+    });
+
+    html += `
+        </tbody>
+      </table>
+    `;
+
+    container.innerHTML = html;
+
+  }).getUserCalendar(userId);
+}
+
+
+
+
+// ================= AUTO-LOGIN + ACCOUNT SNAPSHOT + COPY DOTS =================
+window.addEventListener('load', () => {
+  // --- Parse URL params for affiliate tracking ---
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get("ref");
+  const campaign = params.get("campaign") || "direct";
+
+  if (ref && !localStorage.getItem("affiliate_ref")) {
+    localStorage.setItem("affiliate_ref", ref);
+    localStorage.setItem("affiliate_campaign", campaign);
+    console.log(`Affiliate ref saved: ${ref}, campaign: ${campaign}`);
+  }
+
+  // --- Get local storage values ---
+  const email = localStorage.getItem('jarvis_email') || '';
+  const visitorId = getVisitorId(); // Make sure this function exists
+  const loggedIn = localStorage.getItem('jarvis_logged_in') === '1';
+
+  // --- Call Apps Script to get or create user ---
+  google.script.run
+    .withSuccessHandler(user => {
+      if (!user) return;
+
+      // Store user ID locally
+      if (user.UserID) localStorage.setItem('jarvis_userid', user.UserID);
+
+      // --- Update Account Snapshot ---
+      const balanceEl = document.getElementById('snapshotBalance');
+      const visitsEl = document.getElementById('snapshotVisits');
+      if (balanceEl) balanceEl.textContent = `$${Number(user.Balance || 0).toLocaleString()}`;
+      if (visitsEl) visitsEl.textContent = Number(user.Visits || 0);
+
+      // --- Render Copy Accounts Dots ---
+      renderCopyDots(user.copyAccounts || []);
+
+      // --- Logged-in users go directly to dashboard ---
+      if (loggedIn) {
+        show('dashboard');
+        if (typeof loadDashboard === 'function') loadDashboard(user);
+      } else {
+        // --- Not logged in: determine challenge step ---
+        show('challenge');
+        hideAllChallengeSteps();
+
+        if (user.AccountStatus === 'member' && user.Password) {
+          // Returning member: show email + password login (Step 2)
+          challengeStepLogin.style.display = 'block';
+          memberEmail.value = user.Email || '';
+        } else {
+          // New user or no password: show email input (Step 1)
+          challengeStepEmail.style.display = 'block';
+          if (email) challengeEmail.value = email;
+        }
+      }
+
+      // --- Always load testimonials if function exists ---
+      if (typeof loadTestimonials === 'function') loadTestimonials();
+
+    })
+    .getOrCreateUser(email, visitorId); // Pass email & visitorId to Apps Script
+});
+
+// =======================
+// COPY DOTS RENDER FUNCTION
+// =======================
+function renderCopyDots(accounts) {
+  const container = document.getElementById('copyStatusDots');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  accounts.slice(0, 20).forEach(acc => {
+    const dot = document.createElement('div');
+    dot.className = 'copy-dot';
+
+    if (!acc.enabled) dot.classList.add('disabled');
+    else if (acc.status === 'Connected') dot.classList.add('online');
+    else if (acc.status === 'Offline') dot.classList.add('offline');
+    else dot.classList.add('unknown');
+
+    dot.title = `${acc.accountName} (${acc.platform})`;
+
+    container.appendChild(dot);
+  });
+}
+
+</script>
+
+
+</body>
+</html>
