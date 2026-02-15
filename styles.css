@@ -87,7 +87,7 @@ footer {
   text-decoration: none;
 }
 
-section { display:none; padding:20px; }
+section { padding:20px; }
 section.active { display:block; }
 .card { background:#11151c; padding:5px; border-radius:5px; margin-top:5px; }
 .btn-primary { background:#00ff9c; border:none; padding:10px 16px; cursor:pointer; color:#000; font-weight:bold; }
