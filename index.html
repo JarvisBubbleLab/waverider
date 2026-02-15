@@ -6,7 +6,12 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
+<script>
+  window.APP_CONTEXT = {
+    affiliateRef: "<?= AFFILIATE_REF ?>",
+    affiliateValid: <?= AFFILIATE_VALID ?>
+  };
+</script>
 <!-- ============ HEADER ============ -->
 <header>
   <div class="logo-wrap">
@@ -117,6 +122,7 @@ window.addEventListener('load', loadTestimonials);
 
 </body>
 </html>
+
 
 
 
