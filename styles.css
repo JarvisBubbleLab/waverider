@@ -95,14 +95,14 @@ input { padding:5px; width:100%; margin-top:5px; border-radius:6px; border:none;
 
 /* ================= HOME STYLES ================= */
 .home-grid { display:flex; flex-wrap:wrap; gap:40px; }
-.home-col { flex: 0 0 150px;   /* fixed width column */}
+.home-col { flex: 0 0 200px;   /* fixed width column */}
 .home-col {
-  flex: 0 0 400px;
+  flex: 0 0 350px;
   text-align: center;
 }
 
 .home-col img {
-  width: 400px;        /* force exact width */
+  width: 350px;        /* force exact width */
   height: auto;
   display: block;
   margin: 0 auto 20px auto;
