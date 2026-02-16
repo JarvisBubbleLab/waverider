@@ -7,7 +7,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="logo-wrap">
     <img src="images/logo.png" alt="Jarvis Bubble Lab" class="logo-image">
@@ -21,7 +20,6 @@
   </nav>
 </header>
 
-<!-- HOME SECTION -->
 <section id="home" class="active">
   <div class="home-grid">
     <div class="home-col">
@@ -48,36 +46,18 @@
     </div>
   </div>
 
-  <!-- INTRO VIDEO -->
   <div class="video-section" style="margin-top:60px;">
     <iframe src="https://www.youtube.com/embed/a2-2LygDwv0?si=9w9KOrUnXQJq4aVF" allowfullscreen></iframe>
   </div>
 
-  <!-- TESTIMONIALS -->
   <div class="testimonial-section" style="margin-top:40px;">
     <h2>What Traders Are Saying</h2>
     <div id="testimonial-grid" class="testimonial-grid">
-
-      <? 
-        const testimonials = getTestimonials();
-        if (!testimonials || testimonials.length === 0) { 
-      ?>
-        <p>Testimonials coming soon.</p>
-      <? } else { 
-          testimonials.forEach(function(t) { ?>
-            <div class="testimonial-item">
-              <p><?= t.Testimonial ?></p>
-              <strong>— <?= t.DisplayName ?></strong>
-            </div>
-      <?   }); 
-         } 
-      ?>
-
+      <p>Loading testimonials...</p>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer-bar">
   <div class="footer-left">
     <p>Jarvis Bubble Lab</p>
@@ -85,19 +65,50 @@
     <p>440-661-5487</p>
     <p>© 2026 by Jarvis Bubble Lab.</p>
   </div>
-  <div class="footer-center">
-    <a href="https://x.com/TheJarvisBubble" class="social-circle">X</a>
-    <a href="#" class="social-circle">T</a>
-    <a href="#" class="social-circle">F</a>
-    <a href="#" class="social-circle">I</a>
-  </div>
-  <div class="footer-right">
-    <p><a href="#">Accessibility</a></p>
-    <p><a href="#">Privacy Policy</a></p>
-    <p><a href="#">Refund Policy</a></p>
-    <p><a href="#">Terms & Conditions</a></p>
-  </div>
 </footer>
+
+<script>
+async function loadTestimonials() {
+
+  const grid = document.getElementById("testimonial-grid");
+
+  try {
+
+    const response = await fetch(
+      "https://script.google.com/macros/s/AKfycby7IKI0TGm5r2iibuq229r6_KZubItTxlAdQgQ17wA-5kqDU9FgpPZMnkNxSEOjeORLpw/exec?api=testimonials"
+    );
+
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+
+    const data = await response.json();
+
+    grid.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      grid.innerHTML = "<p>Testimonials coming soon.</p>";
+      return;
+    }
+
+    data.forEach(t => {
+      const div = document.createElement("div");
+      div.className = "testimonial-item";
+      div.innerHTML = `
+        <p>${t.Testimonial}</p>
+        <strong>— ${t.DisplayName}</strong>
+      `;
+      grid.appendChild(div);
+    });
+
+  } catch (error) {
+    console.error("Testimonials load error:", error);
+    grid.innerHTML = "<p>Unable to load testimonials.</p>";
+  }
+}
+
+window.addEventListener("DOMContentLoaded", loadTestimonials);
+</script>
 
 </body>
 </html>
