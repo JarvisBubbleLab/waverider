@@ -97,7 +97,7 @@ input { padding:5px; width:100%; margin-top:5px; border-radius:6px; border:none;
 .home-grid { display:flex; flex-wrap:wrap; gap:40px; }
 .home-col { flex: 0 0 150px;   /* fixed width column */}
 .home-col {
-  flex: 0 0 300px;
+  flex: 0 0 350px;
   text-align: center;
 }
 
