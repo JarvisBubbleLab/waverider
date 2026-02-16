@@ -99,8 +99,7 @@ async function loadTestimonials() {
   const grid = document.getElementById('testimonial-grid');
 
   try {
-    const response = await fetch("https://script.google.com/macros/s/AKfycby7IKI0TGm5r2iibuq229r6_KZubItTxlAdQgQ17wA-5kqDU9FgpPZMnkNxSEOjeORLpw/exec?api=testimonials")
-;
+    const response = await fetch("https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec?api=testimonials");
     const data = await response.json();
 
     grid.innerHTML = "";
@@ -124,11 +123,13 @@ async function loadTestimonials() {
 }
 
 window.addEventListener("load", loadTestimonials);
+
 </script>
 
 
 </body>
 </html>
+
 
 
 
