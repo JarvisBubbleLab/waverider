@@ -6,21 +6,12 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<script>
-  window.APP_CONTEXT = {
-    affiliateRef: "<?= AFFILIATE_REF ?>",
-    affiliateValid: <?= AFFILIATE_VALID ?>
-  };
-</script>
-<!-- ============ HEADER ============ -->
+
+<!-- HEADER -->
 <header>
   <div class="logo-wrap">
-    <img src="images/logo.png"
-      alt="Jarvis Bubble Lab"
-      class="logo-image"
-    />
+    <img src="images/logo.png" alt="Jarvis Bubble Lab" class="logo-image">
   </div>
-
   <nav>
     <a href="index.html">Home</a>
     <a href="philosophy.html">Philosophy</a>
@@ -30,7 +21,7 @@
   </nav>
 </header>
 
-<!-- ============ HOME ============ -->
+<!-- HOME SECTION -->
 <section id="home" class="active">
   <div class="home-grid">
     <div class="home-col">
@@ -57,11 +48,13 @@
     </div>
   </div>
 
+  <!-- INTRO VIDEO -->
   <div class="video-section" style="margin-top:60px;">
     <iframe src="https://www.youtube.com/embed/a2-2LygDwv0?si=9w9KOrUnXQJq4aVF" allowfullscreen></iframe>
   </div>
 
-  <div class="testimonial-section">
+  <!-- TESTIMONIALS -->
+  <div class="testimonial-section" style="margin-top:40px;">
     <h2>What Traders Are Saying</h2>
     <div id="testimonial-grid" class="testimonial-grid">
       <p>Loading testimonials…</p>
@@ -69,7 +62,7 @@
   </div>
 </section>
 
-<!-- ================= FOOTER ================= -->
+<!-- FOOTER -->
 <footer class="footer-bar">
   <div class="footer-left">
     <p>Jarvis Bubble Lab</p>
@@ -77,14 +70,12 @@
     <p>440-661-5487</p>
     <p>© 2026 by Jarvis Bubble Lab.</p>
   </div>
-
   <div class="footer-center">
     <a href="https://x.com/TheJarvisBubble" class="social-circle">X</a>
     <a href="#" class="social-circle">T</a>
     <a href="#" class="social-circle">F</a>
     <a href="#" class="social-circle">I</a>
   </div>
-
   <div class="footer-right">
     <p><a href="accessibility.html">Accessibility</a></p>
     <p><a href="privacy.html">Privacy Policy</a></p>
@@ -93,7 +84,7 @@
   </div>
 </footer>
 
-<!-- ============ JS (INDEX ONLY) ============ -->
+<!-- JS: Fetch Testimonials -->
 <script>
 async function loadTestimonials() {
   const grid = document.getElementById('testimonial-grid');
@@ -103,7 +94,6 @@ async function loadTestimonials() {
     const data = await response.json();
 
     grid.innerHTML = "";
-
     if (!data || !data.length) {
       grid.innerHTML = "<p>Testimonials coming soon.</p>";
       return;
@@ -115,7 +105,6 @@ async function loadTestimonials() {
       div.innerHTML = `<p>${t.Testimonial}</p><strong>— ${t.DisplayName}</strong>`;
       grid.appendChild(div);
     });
-
   } catch (error) {
     console.error("Error loading testimonials:", error);
     grid.innerHTML = "<p>Unable to load testimonials.</p>";
@@ -123,15 +112,10 @@ async function loadTestimonials() {
 }
 
 window.addEventListener("load", loadTestimonials);
-
 </script>
-
 
 </body>
 </html>
-
-
-
 
 
 
