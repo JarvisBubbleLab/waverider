@@ -88,14 +88,25 @@
 <script>
 async function loadTestimonials() {
   const grid = document.getElementById('testimonial-grid');
-  const url = "https://script.google.com/macros/s/AKfycbzhzkNUNHuObNQ2XKmve5xBQVlJ9Lw3kVAMjgAbwukoL7Uxmss9RN6ZL6zpVXPNrIMwRA/exec?api=testimonials"; // <-- replace with your deployed URL
+  const url = "https://script.google.com/macros/s/AKfycby7IKI0TGm5r2iibuq229r6_KZubItTxlAdQgQ17wA-5kqDU9FgpPZMnkNxSEOjeORLpw/exec?api=testimonials";
 
   grid.innerHTML = "<p>Loading testimonials…</p>";
 
   try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    // Add a cache-busting timestamp
+    const fetchUrl = `${url}&_=${Date.now()}`;
+
+    // Use Promise.race to implement timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+
+    const response = await fetch(fetchUrl, { signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+
     const data = await response.json();
+    console.log("Testimonials fetched:", data);
 
     grid.innerHTML = "";
 
@@ -113,15 +124,22 @@ async function loadTestimonials() {
 
   } catch (error) {
     console.error("Error loading testimonials:", error);
-    grid.innerHTML = "<p>Unable to load testimonials.</p>";
+
+    if (error.name === 'AbortError') {
+      grid.innerHTML = "<p>Request timed out. Please try again later.</p>";
+    } else {
+      grid.innerHTML = "<p>Unable to load testimonials. Check console for details.</p>";
+    }
   }
 }
 
 window.addEventListener("load", loadTestimonials);
 </script>
 
+
 </body>
 </html>
+
 
 
 
