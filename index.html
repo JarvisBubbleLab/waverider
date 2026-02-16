@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Home | EMAWave</title>
+<title>Jarvis Bubble Lab</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
   <div class="logo-wrap">
     <img src="images/logo.png" alt="Jarvis Bubble Lab" class="logo-image">
@@ -20,6 +21,7 @@
   </nav>
 </header>
 
+<!-- HOME SECTION -->
 <section id="home" class="active">
   <div class="home-grid">
     <div class="home-col">
@@ -46,18 +48,26 @@
     </div>
   </div>
 
+  <!-- VIDEO -->
   <div class="video-section" style="margin-top:60px;">
-    <iframe src="https://www.youtube.com/embed/a2-2LygDwv0?si=9w9KOrUnXQJq4aVF" allowfullscreen></iframe>
+    <iframe 
+      src="https://www.youtube.com/embed/a2-2LygDwv0?si=9w9KOrUnXQJq4aVF"
+      allowfullscreen>
+    </iframe>
   </div>
 
+  <!-- TESTIMONIALS -->
   <div class="testimonial-section" style="margin-top:40px;">
     <h2>What Traders Are Saying</h2>
+
     <div id="testimonial-grid" class="testimonial-grid">
       <p>Loading testimonials...</p>
     </div>
+
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer-bar">
   <div class="footer-left">
     <p>Jarvis Bubble Lab</p>
@@ -67,10 +77,16 @@
   </div>
 </footer>
 
+<!-- TESTIMONIAL FETCH SCRIPT -->
 <script>
 async function loadTestimonials() {
 
   const grid = document.getElementById("testimonial-grid");
+
+  if (!grid) {
+    console.error("testimonial-grid element not found.");
+    return;
+  }
 
   try {
 
@@ -107,16 +123,11 @@ async function loadTestimonials() {
   }
 }
 
-window.addEventListener("DOMContentLoaded", loadTestimonials);
+document.addEventListener("DOMContentLoaded", loadTestimonials);
 </script>
 
 </body>
 </html>
-
-
-
-
-
 
 
 
