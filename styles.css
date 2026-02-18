@@ -53,12 +53,6 @@ nav a {
 }
 
 /* ================= FOOTER ================= */
-footer {
-  display: flex;
-  justify-content: space-between;
-  background: #111;
-}
-
 .footer-bar {
   width: 95%;
   padding: 30px 60px; /* supersedes generic padding */
