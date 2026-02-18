@@ -39,6 +39,7 @@
     
     <img
       src="images/3.jpg"
+      alt="EMA Wave education philosophy"
       style="
         max-width:400px;
         width:100%;
@@ -90,7 +91,11 @@
   </div>
 
   <div class="footer-center">
-    <a href="https://x.com/TheJarvisBubble" class="social-circle">X</a>
+    <a href="https://x.com/TheJarvisBubble"
+   target="_blank"
+   rel="noopener"
+   class="social-circle">X</a>
+
     <a href="#" class="social-circle">T</a>
     <a href="#" class="social-circle">F</a>
     <a href="#" class="social-circle">I</a>
@@ -108,12 +113,6 @@
 <script>
   let currentUserId = null;
 
-  function show(id) {
-    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-    const el = document.getElementById(id);
-    if (el) el.classList.add('active');
-  }
-
   function logout() {
     localStorage.removeItem('jarvis_logged_in');
   }
@@ -121,6 +120,7 @@
 
 </body>
 </html>
+
 
 
 
