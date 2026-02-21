@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NQ / MNQ Position Size Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 20px auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 15px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 15px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h2>NQ / MNQ Position Size Calculator</h2>
+
+  <label>
+    Balance ($)
+    <input id="balance" type="number" value="2500" />
+  </label>
+
+  <label>
+    Max losses (number of losing trades you can afford)
+    <input id="maxLosses" type="number" value="5" />
+  </label>
+
+  <label>
+    Strategy Stop Loss (Ticks)
+    <input id="stopTicks" type="number" value="100" />
+  </label>
+
+  <button onclick="calculate()">Calculate</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function calculate() {
+      const balance = parseFloat(document.getElementById('balance').value);
+      const maxLosses = parseFloat(document.getElementById('maxLosses').value);
+      const stopTicks = parseFloat(document.getElementById('stopTicks').value);
+
+      if (isNaN(balance) || isNaN(maxLosses) || isNaN(stopTicks) ||
+          balance <= 0 || maxLosses <= 0 || stopTicks <= 0) {
+        document.getElementById('result').textContent =
+          'Please enter valid positive numbers for all inputs.';
+        return;
+      }
+
+      const maxLossPerTrade = balance / maxLosses;      // $
+      const maxTicksNQ = maxLossPerTrade / 5;           // $5/tick
+      const maxTicksMNQ = maxLossPerTrade / 0.5;        // $0.5/tick
+
+      let symbol, contracts;
+
+      if (maxTicksNQ >= stopTicks) {
+        symbol = 'NQ';
+        contracts = Math.floor(maxTicksNQ / stopTicks);
+      } else {
+        symbol = 'MNQ';
+        contracts = Math.floor(maxTicksMNQ / stopTicks);
+      }
+
+      document.getElementById('result').innerHTML = `
+        <strong>Results:</strong><br/>
+        Max loss per trade: $${maxLossPerTrade.toFixed(2)}<br/>
+        Max ticks (NQ): ${maxTicksNQ.toFixed(2)}<br/>
+        Max ticks (MNQ): ${maxTicksMNQ.toFixed(2)}<br/>
+        <br/>
+        Suggested position: <strong>${contracts} ${symbol}</strong>
+      `;
+    }
+  </script>
+</body>
+</html>
